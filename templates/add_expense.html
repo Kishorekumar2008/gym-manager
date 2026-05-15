@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>➕ Add Expense</h1>
+<div class="card" style="max-width:500px">
+    <form method="POST">
+        <div class="form-group">
+            <label>Category</label>
+            <select name="category">
+                <option value="rent">Rent</option>
+                <option value="electricity">Electricity</option>
+                <option value="equipment">Equipment</option>
+                <option value="salary">Salary</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <input type="text" name="description" placeholder="Enter description" required>
+        </div>
+        <div class="form-group">
+            <label>Amount (₹)</label>
+            <input type="number" name="amount" placeholder="Enter amount" required>
+        </div>
+        <button type="submit" class="btn btn-red">Add Expense</button>
+        <a href="/expenses" class="btn btn-blue" style="margin-left:10px">Cancel</a>
+    </form>
+</div>
+{% endblock %}

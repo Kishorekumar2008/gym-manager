@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>➕ Add Income</h1>
+<div class="card" style="max-width:500px">
+    <form method="POST">
+        <div class="form-group">
+            <label>Source</label>
+            <input type="text" name="source" placeholder="e.g. membership, personal training" required>
+        </div>
+        <div class="form-group">
+            <label>Amount (₹)</label>
+            <input type="number" name="amount" placeholder="Enter amount" required>
+        </div>
+        <button type="submit" class="btn btn-green">Add Income</button>
+        <a href="/finance" class="btn btn-red" style="margin-left:10px">Cancel</a>
+    </form>
+</div>
+{% endblock %}

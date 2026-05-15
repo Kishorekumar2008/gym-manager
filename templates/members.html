@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>👥 Members</h1>
+<a href="/add_member" class="btn btn-green" style="margin-bottom:20px">+ Add Member</a>
+<div class="card">
+    <table>
+        <tr>
+            <th>ID</th><th>Name</th><th>Phone</th>
+            <th>Membership</th><th>Fee</th><th>Status</th><th>Action</th>
+        </tr>
+        {% for m in members %}
+        <tr>
+            <td>{{ m.id }}</td>
+            <td>{{ m.name }}</td>
+            <td>{{ m.phone }}</td>
+            <td>{{ m.membership_type }}</td>
+            <td>₹{{ m.fee }}</td>
+            <td>
+                {% if m.paid %}
+                    <span class="paid">✅ PAID</span>
+                {% else %}
+                    <span class="unpaid">❌ UNPAID</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if not m.paid %}
+                    <a href="/mark_paid/{{ m.id }}" class="btn btn-green">Mark Paid</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

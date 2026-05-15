@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>💰 Finance — {{ month }} {{ year }}</h1>
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="number" style="color:#27ae60">₹{{ total_income }}</div>
+        <div class="label">Total Income</div>
+    </div>
+    <div class="stat-card">
+        <div class="number">₹{{ total_expense }}</div>
+        <div class="label">Total Expenses</div>
+    </div>
+    <div class="stat-card">
+        <div class="number" style="color:{% if profit > 0 %}#27ae60{% else %}#e94560{% endif %}">₹{{ profit }}</div>
+        <div class="label">Net Profit</div>
+    </div>
+</div>
+<a href="/add_income" class="btn btn-green" style="margin-bottom:20px">+ Add Income</a>
+<div class="card">
+    <h2>Income Records</h2>
+    <table>
+        <tr><th>Date</th><th>Source</th><th>Amount</th></tr>
+        {% for r in records %}
+        <tr>
+            <td>{{ r.date }}</td>
+            <td>{{ r.source }}</td>
+            <td>₹{{ r.amount }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

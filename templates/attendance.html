@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>📅 Attendance — {{ today }}</h1>
+<div class="card">
+    <h2>Mark Attendance</h2>
+    <table>
+        <tr><th>ID</th><th>Name</th><th>Phone</th><th>Action</th></tr>
+        {% for m in all_members %}
+        <tr>
+            <td>{{ m.id }}</td>
+            <td>{{ m.name }}</td>
+            <td>{{ m.phone }}</td>
+            <td><a href="/mark_attendance/{{ m.id }}/{{ m.name }}" class="btn btn-blue">Mark Present</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+<div class="card">
+    <h2>Present Today ({{ today_list|length }})</h2>
+    {% if today_list|length == 0 %}
+        <p>Nobody marked present yet!</p>
+    {% else %}
+        {% for r in today_list %}
+            <p>✅ {{ r.member_name }}</p>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

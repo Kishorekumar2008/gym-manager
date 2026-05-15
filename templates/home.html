@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>📊 Dashboard</h1>
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="number">{{ total_members }}</div>
+        <div class="label">Total Members</div>
+    </div>
+    <div class="stat-card">
+        <div class="number" style="color:#27ae60">{{ total_paid }}</div>
+        <div class="label">Paid Members</div>
+    </div>
+    <div class="stat-card">
+        <div class="number">{{ total_unpaid }}</div>
+        <div class="label">Unpaid Members</div>
+    </div>
+    <div class="stat-card">
+        <div class="number" style="color:#27ae60">₹{{ total_collected }}</div>
+        <div class="label">Collected This Month</div>
+    </div>
+    <div class="stat-card">
+        <div class="number">₹{{ total_pending }}</div>
+        <div class="label">Pending Amount</div>
+    </div>
+</div>
+{% endblock %}

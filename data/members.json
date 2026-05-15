@@ -1,1 +1,1 @@
-[{"id": 1, "name": "kishore", "phone": "825558615", "membership_type": "monthly", "fee": 1800, "paid": true}, {"id": 2, "name": "boushan", "phone": "9363766848", "membership_type": "quarterly", "fee": 4900, "paid": false}]
+[{"id": 1, "name": "kishore", "phone": "825558615", "membership_type": "monthly", "fee": 1800, "paid": true}, {"id": 2, "name": "boushan", "phone": "9363766848", "membership_type": "quarterly", "fee": 4900, "paid": true}]
