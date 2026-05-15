@@ -1,62 +1,62 @@
-import json
-import os
+from database import get_connection
 from datetime import datetime
 
-FINANCE_FILE = "data/finance.json"
-
 def setup():
-    if not os.path.exists(FINANCE_FILE):
-        with open(FINANCE_FILE, "w") as f:
-            json.dump([], f)
+    pass
 
-# Record an income entry
 def add_income(source, amount):
-    setup()
-    with open(FINANCE_FILE, "r") as f:
-        records = json.load(f)
-    entry = {
-        "type": "income",
-        "source": source,
-        "amount": amount,
-        "month": datetime.now().strftime("%B"),
-        "year": datetime.now().year,
-        "date": datetime.now().strftime("%d-%m-%Y")
-    }
-    records.append(entry)
-    with open(FINANCE_FILE, "w") as f:
-        json.dump(records, f)
-    print(f"Income of ₹{amount} recorded!")
+    conn = get_connection()
+    cursor = conn.cursor()
+    now = datetime.now()
+    cursor.execute("""
+        INSERT INTO finance (source, amount, month, year, date)
+        VALUES (?, ?, ?, ?, ?)
+    """, (source, amount, now.strftime("%B"), now.year, now.strftime("%d-%m-%Y")))
+    conn.commit()
+    conn.close()
+    print(f"Income ₹{amount} recorded!")
 
-# Show monthly income
+def get_monthly_income():
+    conn = get_connection()
+    cursor = conn.cursor()
+    now = datetime.now()
+    cursor.execute("""
+        SELECT * FROM finance
+        WHERE month = ? AND year = ?
+    """, (now.strftime("%B"), now.year))
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+
 def show_monthly_income():
-    setup()
-    with open(FINANCE_FILE, "r") as f:
-        records = json.load(f)
-    current_month = datetime.now().strftime("%B")
-    current_year = datetime.now().year
+    records = get_monthly_income()
+    now = datetime.now()
     total = 0
-    print(f"\n===== INCOME FOR {current_month} {current_year} =====")
+    print(f"\n===== INCOME FOR {now.strftime('%B %Y')} =====")
     for r in records:
-        if r["month"] == current_month and r["year"] == current_year:
-            print(f"{r['date']} | {r['source']} | ₹{r['amount']}")
-            total += r["amount"]
-    print(f"TOTAL: ₹{total}")
-    print("================================\n")
+        print(f"{r['date']} | {r['source']} | ₹{r['amount']}")
+        total += r["amount"]
+    print(f"TOTAL: ₹{total}\n")
 
-# Compare this year vs last year
+def get_monthly_total():
+    records = get_monthly_income()
+    return sum(r["amount"] for r in records)
+
 def yearly_comparison():
-    setup()
-    with open(FINANCE_FILE, "r") as f:
-        records = json.load(f)
+    conn = get_connection()
+    cursor = conn.cursor()
     this_year = datetime.now().year
     last_year = this_year - 1
-    this_total = sum(r["amount"] for r in records if r["year"] == this_year)
-    last_total = sum(r["amount"] for r in records if r["year"] == last_year)
+    cursor.execute("SELECT SUM(amount) as total FROM finance WHERE year = ?", (this_year,))
+    this_total = cursor.fetchone()["total"] or 0
+    cursor.execute("SELECT SUM(amount) as total FROM finance WHERE year = ?", (last_year,))
+    last_total = cursor.fetchone()["total"] or 0
+    conn.close()
     print(f"\n===== YEARLY COMPARISON =====")
     print(f"{last_year}: ₹{last_total}")
     print(f"{this_year}: ₹{this_total}")
     if this_total > last_total:
-        print(f"📈 UP by ₹{this_total - last_total}")
+        print(f"UP by ₹{this_total - last_total}")
     else:
-        print(f"📉 DOWN by ₹{last_total - this_total}")
+        print(f"DOWN by ₹{last_total - this_total}")
     print("==============================\n")

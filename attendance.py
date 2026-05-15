@@ -1,89 +1,89 @@
-import json
-import os
+from database import get_connection
 from datetime import datetime
 
-ATTENDANCE_FILE = "data/attendance.json"
-
 def setup():
-    if not os.path.exists(ATTENDANCE_FILE):
-        with open(ATTENDANCE_FILE, "w") as f:
-            json.dump([], f)
+    pass
 
-# Mark a member as present today
 def mark_attendance(member_id, member_name):
-    setup()
-    with open(ATTENDANCE_FILE, "r") as f:
-        records = json.load(f)
+    conn = get_connection()
+    cursor = conn.cursor()
     today = datetime.now().strftime("%d-%m-%Y")
-    # Check if already marked today
-    for r in records:
-        if r["member_id"] == member_id and r["date"] == today:
-            print(f"{member_name} already marked present today!")
-            return
-    entry = {
-        "member_id": member_id,
-        "member_name": member_name,
-        "date": today,
-        "month": datetime.now().strftime("%B"),
-        "year": datetime.now().year
-    }
-    records.append(entry)
-    with open(ATTENDANCE_FILE, "w") as f:
-        json.dump(records, f)
-    print(f"✅ {member_name} marked present for {today}!")
+    cursor.execute("""
+        SELECT * FROM attendance
+        WHERE member_id = ? AND date = ?
+    """, (member_id, today))
+    existing = cursor.fetchone()
+    if existing:
+        print(f"{member_name} already marked today!")
+        conn.close()
+        return
+    now = datetime.now()
+    cursor.execute("""
+        INSERT INTO attendance (member_id, member_name, date, month, year)
+        VALUES (?, ?, ?, ?, ?)
+    """, (member_id, member_name, today, now.strftime("%B"), now.year))
+    conn.commit()
+    conn.close()
+    print(f"{member_name} marked present!")
 
-# Show today's attendance
-def show_today():
-    setup()
-    with open(ATTENDANCE_FILE, "r") as f:
-        records = json.load(f)
+def get_today_attendance():
+    conn = get_connection()
+    cursor = conn.cursor()
     today = datetime.now().strftime("%d-%m-%Y")
-    today_list = [r for r in records if r["date"] == today]
+    cursor.execute("SELECT * FROM attendance WHERE date = ?", (today,))
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+
+def show_today():
+    today_list = get_today_attendance()
+    today = datetime.now().strftime("%d-%m-%Y")
     print(f"\n===== TODAY'S ATTENDANCE ({today}) =====")
     if len(today_list) == 0:
-        print("Nobody marked present yet!")
+        print("Nobody present yet!")
     else:
         for r in today_list:
-            print(f"✅ {r['member_name']}")
-        print(f"\nTotal present: {len(today_list)}")
+            print(f"{r['member_name']}")
+        print(f"Total: {len(today_list)}")
     print("==========================================\n")
 
-# Show attendance history of one member
 def member_history(member_id):
-    setup()
-    with open(ATTENDANCE_FILE, "r") as f:
-        records = json.load(f)
-    history = [r for r in records if r["member_id"] == member_id]
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM attendance WHERE member_id = ?", (member_id,))
+    rows = cursor.fetchall()
+    conn.close()
+    records = [dict(row) for row in rows]
     print(f"\n===== ATTENDANCE HISTORY =====")
-    if len(history) == 0:
-        print("No attendance records found!")
-    else:
-        for r in history:
-            print(f"📅 {r['date']}")
-        print(f"\nTotal days attended: {len(history)}")
-    print("==============================\n")
+    for r in records:
+        print(f"{r['date']}")
+    print(f"Total days: {len(records)}\n")
 
-# Show members who havent come in 7 days
 def inactive_members():
-    setup()
     from members import get_all_members
-    with open(ATTENDANCE_FILE, "r") as f:
-        records = json.load(f)
+    conn = get_connection()
+    cursor = conn.cursor()
     all_members = get_all_members()
     today = datetime.now()
-    print("\n===== INACTIVE MEMBERS (7+ days absent) =====")
+    print("\n===== INACTIVE MEMBERS =====")
     found = False
     for m in all_members:
-        member_records = [r for r in records if r["member_id"] == m["id"]]
-        if len(member_records) == 0:
-            print(f"⚠️  {m['name']} — Never attended!")
+        cursor.execute("""
+            SELECT * FROM attendance
+            WHERE member_id = ?
+            ORDER BY id DESC LIMIT 1
+        """, (m["id"],))
+        last = cursor.fetchone()
+        if not last:
+            print(f"{m['name']} — Never attended!")
             found = True
         else:
-            last_date = datetime.strptime(member_records[-1]["date"], "%d-%m-%Y")
-            days_absent = (today - last_date).days
-            if days_absent >= 7:
-                print(f"⚠️  {m['name']} — Last came {days_absent} days ago!")
+            last_date = datetime.strptime(last["date"], "%d-%m-%Y")
+            days = (today - last_date).days
+            if days >= 7:
+                print(f"{m['name']} — Last came {days} days ago!")
                 found = True
     if not found:
-        print("All members are active! 💪")
-    print("==============================================\n")
+        print("All members active!")
+    conn.close()
+    print("============================\n")

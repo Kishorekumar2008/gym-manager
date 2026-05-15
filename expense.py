@@ -1,51 +1,43 @@
-import json
-import os
+from database import get_connection
 from datetime import datetime
 
-EXPENSE_FILE = "data/expenses.json"
-
 def setup():
-    if not os.path.exists(EXPENSE_FILE):
-        with open(EXPENSE_FILE, "w") as f:
-            json.dump([], f)
+    pass
 
 def add_expense(category, description, amount):
-    setup()
-    with open(EXPENSE_FILE, "r") as f:
-        records = json.load(f)
-    entry = {
-        "category": category,
-        "description": description,
-        "amount": amount,
-        "month": datetime.now().strftime("%B"),
-        "year": datetime.now().year,
-        "date": datetime.now().strftime("%d-%m-%Y")
-    }
-    records.append(entry)
-    with open(EXPENSE_FILE, "w") as f:
-        json.dump(records, f)
-    print(f"Expense of ₹{amount} recorded!")
+    conn = get_connection()
+    cursor = conn.cursor()
+    now = datetime.now()
+    cursor.execute("""
+        INSERT INTO expenses (category, description, amount, month, year, date)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (category, description, amount, now.strftime("%B"), now.year, now.strftime("%d-%m-%Y")))
+    conn.commit()
+    conn.close()
+    print(f"Expense ₹{amount} recorded!")
+
+def get_monthly_expenses():
+    conn = get_connection()
+    cursor = conn.cursor()
+    now = datetime.now()
+    cursor.execute("""
+        SELECT * FROM expenses
+        WHERE month = ? AND year = ?
+    """, (now.strftime("%B"), now.year))
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
 
 def show_monthly_expenses():
-    setup()
-    with open(EXPENSE_FILE, "r") as f:
-        records = json.load(f)
-    current_month = datetime.now().strftime("%B")
-    current_year = datetime.now().year
-    total = 0
-    print(f"\n===== EXPENSES FOR {current_month} {current_year} =====")
+    records = get_monthly_expenses()
+    total = sum(r["amount"] for r in records)
+    now = datetime.now()
+    print(f"\n===== EXPENSES {now.strftime('%B %Y')} =====")
     for r in records:
-        if r["month"] == current_month and r["year"] == current_year:
-            print(f"{r['date']} | {r['category']} | {r['description']} | ₹{r['amount']}")
-            total += r["amount"]
-    print(f"TOTAL EXPENSES: ₹{total}")
-    print("==========================================\n")
+        print(f"{r['date']} | {r['category']} | {r['description']} | ₹{r['amount']}")
+    print(f"TOTAL: ₹{total}\n")
     return total
 
 def get_monthly_expense_total():
-    setup()
-    with open(EXPENSE_FILE, "r") as f:
-        records = json.load(f)
-    current_month = datetime.now().strftime("%B")
-    current_year = datetime.now().year
-    return sum(r["amount"] for r in records if r["month"] == current_month and r["year"] == current_year)
+    records = get_monthly_expenses()
+    return sum(r["amount"] for r in records)
