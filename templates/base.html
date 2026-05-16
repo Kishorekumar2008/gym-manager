@@ -1,124 +1,214 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-theme="dark">
 <head>
-    <title>🏋️ Golden Gym Manager</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <title>🏋️ Golden Gym</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
         :root{
-            --bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a26;
-            --accent:#7c3aed;--accent2:#06b6d4;--gold:#f59e0b;
-            --green:#10b981;--red:#ef4444;--text:#f1f5f9;--muted:#64748b;
-            --border:rgba(124,58,237,0.2)
+            --gold:#D4A017;--gold2:#F5C842;--gold3:#FFF0A0;
+            --green:#22C55E;--red:#EF4444;--muted-btn:#6B7280
         }
-        body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+        [data-theme="dark"]{
+            --bg:#0D0D00;--surface:#1A1700;--surface2:#242100;
+            --text:#FFF8E1;--muted:#A89060;--border:rgba(212,160,23,0.25)
+        }
+        [data-theme="light"]{
+            --bg:#FFFDF0;--surface:#FFFFFF;--surface2:#FFF8DC;
+            --text:#1A1200;--muted:#6B5A2A;--border:rgba(212,160,23,0.35)
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{transition:background 0.4s,color 0.3s}
+        body{
+            background:var(--bg);color:var(--text);
+            font-family:'Inter',sans-serif;min-height:100vh;
+            transition:background 0.4s,color 0.3s
+        }
         .navbar{
-            display:flex;align-items:center;gap:6px;padding:14px 28px;
-            background:rgba(18,18,26,0.97);border-bottom:1px solid var(--border);
-            position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)
+            display:flex;align-items:center;gap:4px;padding:12px 24px;
+            background:var(--surface);border-bottom:1px solid var(--border);
+            position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);
+            transition:background 0.4s,border-color 0.3s
         }
-        .brand{
-            font-family:'Syne',sans-serif;font-weight:800;font-size:20px;
-            background:linear-gradient(135deg,var(--accent),var(--accent2));
-            -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-right:16px
-        }
+        .logo-wrap{display:flex;align-items:center;gap:10px;margin-right:14px;text-decoration:none}
+        .logo-img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)}
+        .brand{font-family:'Playfair Display',serif;font-weight:900;font-size:18px;color:var(--gold)}
         .nav-item{
-            padding:8px 14px;border-radius:8px;font-size:13px;color:var(--muted);
-            text-decoration:none;transition:all 0.2s;font-family:'DM Sans',sans-serif
+            padding:7px 12px;border-radius:8px;font-size:12px;color:var(--muted);
+            text-decoration:none;transition:all 0.2s;font-family:'Inter',sans-serif;
+            font-weight:500;letter-spacing:0.2px
         }
-        .nav-item:hover{background:rgba(124,58,237,0.15);color:var(--text)}
-        .nav-active{background:rgba(124,58,237,0.15);color:var(--text)}
-        .container{padding:28px;max-width:1200px;margin:0 auto}
-        .card{
+        .nav-item:hover,.nav-active{background:rgba(212,160,23,0.15);color:var(--gold)}
+        .nav-danger{color:var(--red)!important}
+        .nav-danger:hover{background:rgba(239,68,68,0.1)!important;color:var(--red)!important}
+        .theme-switcher{
+            margin-left:auto;display:flex;gap:3px;
+            background:var(--surface2);border-radius:20px;
+            padding:4px;border:1px solid var(--border)
+        }
+        .theme-btn{
+            padding:4px 10px;border-radius:16px;border:none;cursor:pointer;
+            font-size:11px;font-family:'Inter',sans-serif;background:none;
+            color:var(--muted);transition:all 0.2s;font-weight:500
+        }
+        .theme-btn.active{background:var(--gold);color:#000;font-weight:600}
+        .container{padding:26px 24px;max-width:1200px;margin:0 auto}
+        .hero{
             background:var(--surface);border:1px solid var(--border);
-            border-radius:16px;padding:22px;margin-bottom:20px
+            border-radius:20px;padding:24px 28px;margin-bottom:22px;
+            position:relative;overflow:hidden;
+            transition:background 0.4s,border-color 0.3s
         }
-        .page-title{
-            font-family:'Syne',sans-serif;font-size:24px;font-weight:800;
-            margin-bottom:20px;display:flex;align-items:center;gap:10px
+        .hero-shimmer{
+            position:absolute;top:0;left:-100%;width:50%;height:100%;
+            background:linear-gradient(90deg,transparent,rgba(212,160,23,0.07),transparent);
+            animation:shimmer 4s infinite
         }
-        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+        @keyframes shimmer{0%{left:-100%}100%{left:200%}}
+        .hero-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:var(--gold)}
+        .hero-sub{color:var(--muted);font-size:13px;margin-top:5px;font-weight:300}
+        .live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;display:inline-block;margin-right:6px;animation:pulse 2s infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+        .page-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--gold);margin-bottom:20px}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:13px;margin-bottom:22px}
         .stat-card{
             background:var(--surface);border:1px solid var(--border);border-radius:14px;
-            padding:18px;position:relative;overflow:hidden;
-            transition:transform 0.2s,border-color 0.2s
+            padding:17px;transition:transform 0.25s,border-color 0.25s,box-shadow 0.25s,background 0.4s;
+            cursor:default
         }
-        .stat-card:hover{transform:translateY(-3px);border-color:var(--accent)}
-        .stat-icon{font-size:22px;margin-bottom:10px}
-        .stat-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:800}
-        .stat-label{font-size:12px;color:var(--muted);margin-top:4px}
-        .green{color:var(--green)}.red{color:var(--red)}.gold{color:var(--gold)}.cyan{color:var(--accent2)}.purple{color:var(--accent)}
+        .stat-card:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 8px 28px rgba(212,160,23,0.15)}
+        .stat-icon{font-size:20px;margin-bottom:9px}
+        .stat-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:700}
+        .stat-label{font-size:11px;color:var(--muted);margin-top:3px;font-weight:300;letter-spacing:0.3px}
+        .gold{color:var(--gold)}.green{color:var(--green)}.red{color:var(--red)}
+        .card{
+            background:var(--surface);border:1px solid var(--border);
+            border-radius:16px;padding:20px;margin-bottom:18px;
+            transition:background 0.4s,border-color 0.3s
+        }
         table{width:100%;border-collapse:collapse}
-        th{background:var(--surface2);padding:12px 16px;text-align:left;font-size:12px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:0.5px}
-        td{padding:13px 16px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px}
-        tr:last-child td{border-bottom:none}
-        tr:hover td{background:rgba(124,58,237,0.05)}
-        .badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
-        .badge-green{background:rgba(16,185,129,0.15);color:var(--green)}
-        .badge-red{background:rgba(239,68,68,0.15);color:var(--red)}
-        .badge-gold{background:rgba(245,158,11,0.15);color:var(--gold)}
-        .badge-cyan{background:rgba(6,182,212,0.15);color:var(--accent2)}
-        .badge-purple{background:rgba(124,58,237,0.15);color:var(--accent)}
-        .badge-warn{background:rgba(245,158,11,0.2);color:var(--gold)}
-        .btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.2s;text-decoration:none;display:inline-block}
-        .btn-primary{background:var(--accent);color:#fff}
-        .btn-primary:hover{background:#6d28d9}
-        .btn-green{background:rgba(16,185,129,0.2);color:var(--green);border:1px solid rgba(16,185,129,0.3)}
-        .btn-green:hover{background:rgba(16,185,129,0.35)}
-        .btn-red{background:rgba(239,68,68,0.2);color:var(--red);border:1px solid rgba(239,68,68,0.3)}
-        .btn-red:hover{background:rgba(239,68,68,0.35)}
-        .btn-gold{background:rgba(245,158,11,0.2);color:var(--gold);border:1px solid rgba(245,158,11,0.3)}
-        .btn-gold:hover{background:rgba(245,158,11,0.35)}
-        .add-btn{
-            display:inline-flex;align-items:center;gap:6px;padding:10px 20px;
-            border-radius:10px;background:linear-gradient(135deg,var(--accent),#4f46e5);
-            color:#fff;border:none;cursor:pointer;font-family:'Syne',sans-serif;
-            font-weight:700;font-size:13px;transition:all 0.2s;text-decoration:none
+        th{
+            background:var(--surface2);padding:11px 15px;text-align:left;
+            font-size:11px;color:var(--muted);font-weight:500;
+            text-transform:uppercase;letter-spacing:0.8px;
+            transition:background 0.4s
         }
-        .add-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(124,58,237,0.4)}
-        .form-group{margin-bottom:18px}
-        .form-group label{display:block;margin-bottom:6px;font-size:13px;color:var(--muted)}
+        td{
+            padding:12px 15px;border-bottom:1px solid var(--border);
+            font-size:13px;color:var(--text);transition:background 0.2s
+        }
+        tr:last-child td{border-bottom:none}
+        tr:hover td{background:rgba(212,160,23,0.04)}
+        .badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+        .badge-green{background:rgba(34,197,94,0.12);color:var(--green)}
+        .badge-red{background:rgba(239,68,68,0.12);color:var(--red)}
+        .badge-gold{background:rgba(212,160,23,0.15);color:var(--gold)}
+        .badge-muted{background:var(--surface2);color:var(--muted)}
+        .badge-warn{background:rgba(212,160,23,0.2);color:var(--gold)}
+        .btn{
+            padding:7px 14px;border-radius:8px;border:1px solid var(--border);
+            cursor:pointer;font-size:12px;font-family:'Inter',sans-serif;
+            font-weight:500;transition:all 0.2s;text-decoration:none;
+            display:inline-block;background:none;color:var(--muted)
+        }
+        .btn:hover{border-color:var(--gold);color:var(--gold)}
+        .btn-gold{border-color:var(--gold);color:var(--gold)}
+        .btn-gold:hover{background:var(--gold);color:#000}
+        .btn-green{border-color:var(--green);color:var(--green)}
+        .btn-green:hover{background:rgba(34,197,94,0.15)}
+        .btn-red{border-color:var(--red);color:var(--red)}
+        .btn-red:hover{background:rgba(239,68,68,0.15)}
+        .add-btn{
+            display:inline-flex;align-items:center;gap:6px;padding:9px 18px;
+            border-radius:10px;background:var(--gold);color:#000;border:none;
+            cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;
+            font-size:12px;transition:all 0.2s;text-decoration:none;letter-spacing:0.3px
+        }
+        .add-btn:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(212,160,23,0.35)}
+        .row-flex{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+        .form-group{margin-bottom:17px}
+        .form-group label{display:block;margin-bottom:6px;font-size:13px;color:var(--muted);font-weight:400}
         .form-group input,.form-group select{
             width:100%;padding:11px 14px;background:var(--surface2);
             border:1px solid var(--border);border-radius:10px;color:var(--text);
-            font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s
+            font-size:14px;font-family:'Inter',sans-serif;outline:none;
+            transition:border-color 0.2s,background 0.4s
         }
-        .form-group input:focus,.form-group select:focus{border-color:var(--accent)}
-        .form-group select option{background:var(--surface2)}
-        .row-flex{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;flex-wrap:wrap}
-        .section-divider{height:1px;background:var(--border);margin:20px 0}
+        .form-group input:focus,.form-group select:focus{border-color:var(--gold)}
+        .form-group select option{background:var(--surface2);color:var(--text)}
+        .section-title{
+            font-family:'Playfair Display',serif;font-size:16px;font-weight:700;
+            color:var(--gold);margin-bottom:13px;display:flex;align-items:center;gap:10px
+        }
+        .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+        .alert{padding:13px 16px;border-radius:12px;margin-bottom:15px;font-size:13px;display:flex;align-items:center;gap:8px}
+        .alert-warn{background:rgba(212,160,23,0.1);border:1px solid rgba(212,160,23,0.3);color:var(--gold)}
+        .alert-red{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red)}
+        .alert-green{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:var(--green)}
+        .warn-row td{background:rgba(212,160,23,0.04)!important}
         @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
         .fade-up{animation:fadeUp 0.5s ease}
-        .warn-row td{background:rgba(245,158,11,0.05)!important}
-        .hero{
-            background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(6,182,212,0.06));
-            border:1px solid var(--border);border-radius:20px;padding:24px 28px;
-            margin-bottom:24px;position:relative;overflow:hidden
-        }
-        .hero-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800}
-        .hero-sub{color:var(--muted);font-size:13px;margin-top:4px}
-        .live-dot{width:8px;height:8px;background:var(--green);border-radius:50%;display:inline-block;margin-right:6px;animation:pulse 2s infinite}
-        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-        .alert{padding:14px 18px;border-radius:12px;margin-bottom:16px;font-size:13px;display:flex;align-items:center;gap:10px}
-        .alert-warn{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:var(--gold)}
-        .alert-red{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red)}
+        .divider{height:1px;background:var(--border);margin:18px 0}
     </style>
 </head>
 <body>
 <div class="navbar">
-    <span class="brand">🏋️ Golden Gym</span>
-    <a href="/" class="nav-item {% if request.path == '/' %}nav-active{% endif %}">🏠 Dashboard</a>
-    <a href="/members" class="nav-item {% if request.path == '/members' %}nav-active{% endif %}">👥 Members</a>
-    <a href="/attendance" class="nav-item {% if request.path == '/attendance' %}nav-active{% endif %}">📅 Attendance</a>
-    <a href="/finance" class="nav-item {% if request.path == '/finance' %}nav-active{% endif %}">💰 Finance</a>
-    <a href="/expenses" class="nav-item {% if request.path == '/expenses' %}nav-active{% endif %}">📉 Expenses</a>
-    <a href="/unpaid" class="nav-item {% if request.path == '/unpaid' %}nav-active{% endif %}">⚠️ Unpaid</a>
-    <a href="/inactive" class="nav-item {% if request.path == '/inactive' %}nav-active{% endif %}">🚫 Inactive</a>
-    <a href="/plans" class="nav-item {% if request.path == '/plans' %}nav-active{% endif %}">📋 Plans</a>
-    <a href="/logout" class="nav-item" style="margin-left:auto;color:var(--red)">🚪 Logout</a>
+    <a href="/" class="logo-wrap">
+        <img src="/static/logo.png" class="logo-img" onerror="this.style.display='none'" alt="logo">
+        <span class="brand">Golden Gym</span>
+    </a>
+    <a href="/" class="nav-item {% if request.path=='/' %}nav-active{% endif %}">Dashboard</a>
+    <a href="/members" class="nav-item {% if request.path=='/members' %}nav-active{% endif %}">Members</a>
+    <a href="/attendance" class="nav-item {% if request.path=='/attendance' %}nav-active{% endif %}">Attendance</a>
+    <a href="/finance" class="nav-item {% if request.path=='/finance' %}nav-active{% endif %}">Finance</a>
+    <a href="/expenses" class="nav-item {% if request.path=='/expenses' %}nav-active{% endif %}">Expenses</a>
+    <a href="/unpaid" class="nav-item {% if request.path=='/unpaid' %}nav-active{% endif %}">Unpaid</a>
+    <a href="/inactive" class="nav-item {% if request.path=='/inactive' %}nav-active{% endif %}">Inactive</a>
+    <a href="/plans" class="nav-item {% if request.path=='/plans' %}nav-active{% endif %}">Plans</a>
+    <div class="theme-switcher">
+        <button class="theme-btn" onclick="setTheme('light')">☀️</button>
+        <button class="theme-btn" onclick="setTheme('dark')">🌙</button>
+        <button class="theme-btn" onclick="setTheme('auto')">⚙️</button>
+    </div>
+    <a href="/logout" class="nav-item nav-danger" style="margin-left:8px">Logout</a>
 </div>
 <div class="container fade-up">
     {% block content %}{% endblock %}
 </div>
+<script>
+function setTheme(t){
+    const html = document.documentElement;
+    const btns = document.querySelectorAll('.theme-btn');
+    btns.forEach(b=>b.classList.remove('active'));
+    if(t==='auto'){
+        const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        html.setAttribute('data-theme', dark?'dark':'light');
+        btns[2].classList.add('active');
+        localStorage.setItem('gym-theme','auto');
+    } else {
+        html.setAttribute('data-theme',t);
+        localStorage.setItem('gym-theme',t);
+        if(t==='light') btns[0].classList.add('active');
+        else btns[1].classList.add('active');
+    }
+}
+(function(){
+    const saved = localStorage.getItem('gym-theme') || 'dark';
+    const btns = document.querySelectorAll('.theme-btn');
+    if(saved==='auto'){
+        const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+        if(btns[2]) btns[2].classList.add('active');
+    } else {
+        document.documentElement.setAttribute('data-theme',saved);
+        if(saved==='light'&&btns[0]) btns[0].classList.add('active');
+        else if(btns[1]) btns[1].classList.add('active');
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{
+        if(localStorage.getItem('gym-theme')==='auto'){
+            document.documentElement.setAttribute('data-theme',e.matches?'dark':'light');
+        }
+    });
+})();
+</script>
 </body>
 </html>

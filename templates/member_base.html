@@ -1,67 +1,122 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-theme="dark">
 <head>
-    <title>🏋️ Golden Gym — Member Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <title>🏋️ Golden Gym — Member</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root{--gold:#D4A017;--gold2:#F5C842;--green:#22C55E;--red:#EF4444}
+        [data-theme="dark"]{--bg:#0D0D00;--surface:#1A1700;--surface2:#242100;--text:#FFF8E1;--muted:#A89060;--border:rgba(212,160,23,0.25)}
+        [data-theme="light"]{--bg:#FFFDF0;--surface:#FFFFFF;--surface2:#FFF8DC;--text:#1A1200;--muted:#6B5A2A;--border:rgba(212,160,23,0.35)}
         *{margin:0;padding:0;box-sizing:border-box}
-        :root{--bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a26;--accent:#7c3aed;--accent2:#06b6d4;--gold:#f59e0b;--green:#10b981;--red:#ef4444;--text:#f1f5f9;--muted:#64748b;--border:rgba(124,58,237,0.2)}
-        body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
-        .navbar{display:flex;align-items:center;gap:6px;padding:14px 24px;background:rgba(18,18,26,0.97);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
-        .brand{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-right:12px}
-        .nav-item{padding:7px 13px;border-radius:8px;font-size:13px;color:var(--muted);text-decoration:none;transition:all 0.2s}
-        .nav-item:hover{background:rgba(124,58,237,0.15);color:var(--text)}
-        .nav-active{background:rgba(124,58,237,0.15);color:var(--text)}
-        .container{padding:24px;max-width:900px;margin:0 auto}
-        .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:18px}
-        .page-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:18px}
-        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
-        .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
-        .stat-icon{font-size:20px;margin-bottom:8px}
-        .stat-val{font-family:'Syne',sans-serif;font-size:22px;font-weight:800}
+        body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;transition:background 0.4s,color 0.3s}
+        .navbar{display:flex;align-items:center;gap:4px;padding:12px 20px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;transition:background 0.4s}
+        .logo-wrap{display:flex;align-items:center;gap:8px;margin-right:12px}
+        .logo-img{width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)}
+        .brand{font-family:'Playfair Display',serif;font-weight:900;font-size:16px;color:var(--gold)}
+        .nav-item{padding:7px 11px;border-radius:8px;font-size:12px;color:var(--muted);text-decoration:none;transition:all 0.2s;font-weight:500}
+        .nav-item:hover,.nav-active{background:rgba(212,160,23,0.15);color:var(--gold)}
+        .theme-switcher{margin-left:auto;display:flex;gap:3px;background:var(--surface2);border-radius:20px;padding:3px;border:1px solid var(--border)}
+        .theme-btn{padding:3px 9px;border-radius:16px;border:none;cursor:pointer;font-size:11px;font-family:'Inter',sans-serif;background:none;color:var(--muted);transition:all 0.2s}
+        .theme-btn.active{background:var(--gold);color:#000;font-weight:600}
+        .container{padding:22px 20px;max-width:900px;margin:0 auto}
+        .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;transition:background 0.4s,border-color 0.3s}
+        .page-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:var(--gold);margin-bottom:18px}
+        .hero{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:20px 24px;margin-bottom:18px;position:relative;overflow:hidden;transition:background 0.4s}
+        .hero-shimmer{position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(212,160,23,0.07),transparent);animation:shimmer 4s infinite}
+        @keyframes shimmer{0%{left:-100%}100%{left:200%}}
+        .hero-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:var(--gold)}
+        .hero-sub{color:var(--muted);font-size:13px;margin-top:4px;font-weight:300}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:11px;margin-bottom:18px}
+        .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:15px;text-align:center;transition:transform 0.2s,border-color 0.2s}
+        .stat-card:hover{transform:translateY(-3px);border-color:var(--gold)}
+        .stat-icon{font-size:18px;margin-bottom:7px}
+        .stat-val{font-family:'Playfair Display',serif;font-size:20px;font-weight:700}
         .stat-label{font-size:11px;color:var(--muted);margin-top:3px}
-        .green{color:var(--green)}.red{color:var(--red)}.gold{color:var(--gold)}.cyan{color:var(--accent2)}
+        .gold{color:var(--gold)}.green{color:var(--green)}.red{color:var(--red)}
         table{width:100%;border-collapse:collapse}
-        th{background:var(--surface2);padding:10px 14px;text-align:left;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
-        td{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px}
+        th{background:var(--surface2);padding:10px 13px;text-align:left;font-size:11px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:0.7px}
+        td{padding:11px 13px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text)}
         tr:last-child td{border-bottom:none}
-        .badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
-        .badge-green{background:rgba(16,185,129,0.15);color:var(--green)}
-        .badge-red{background:rgba(239,68,68,0.15);color:var(--red)}
-        .badge-gold{background:rgba(245,158,11,0.15);color:var(--gold)}
-        .badge-cyan{background:rgba(6,182,212,0.15);color:var(--accent2)}
-        .badge-warn{background:rgba(245,158,11,0.2);color:var(--gold)}
-        .btn{padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.2s;text-decoration:none;display:inline-block}
-        .btn-green{background:rgba(16,185,129,0.2);color:var(--green);border:1px solid rgba(16,185,129,0.3)}
-        .btn-red{background:rgba(239,68,68,0.2);color:var(--red);border:1px solid rgba(239,68,68,0.3)}
-        .add-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#4f46e5);color:#fff;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;transition:all 0.2s;text-decoration:none}
-        .add-btn:hover{opacity:0.85}
-        .hero{background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(6,182,212,0.06));border:1px solid var(--border);border-radius:18px;padding:22px 24px;margin-bottom:20px}
-        .hero-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800}
-        .hero-sub{color:var(--muted);font-size:13px;margin-top:4px}
-        .alert{padding:12px 16px;border-radius:10px;margin-bottom:14px;font-size:13px}
-        .alert-warn{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:var(--gold)}
+        tr:hover td{background:rgba(212,160,23,0.04)}
+        .badge{padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600}
+        .badge-green{background:rgba(34,197,94,0.12);color:var(--green)}
+        .badge-red{background:rgba(239,68,68,0.12);color:var(--red)}
+        .badge-gold{background:rgba(212,160,23,0.15);color:var(--gold)}
+        .badge-warn{background:rgba(212,160,23,0.2);color:var(--gold)}
+        .badge-muted{background:var(--surface2);color:var(--muted)}
+        .badge-cyan{background:rgba(6,182,212,0.12);color:#06b6d4}
+        .btn{padding:7px 13px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:12px;font-family:'Inter',sans-serif;font-weight:500;transition:all 0.2s;text-decoration:none;display:inline-block;background:none;color:var(--muted)}
+        .btn-gold{border-color:var(--gold);color:var(--gold)}
+        .btn-gold:hover{background:var(--gold);color:#000}
+        .btn-green{border-color:var(--green);color:var(--green)}
+        .btn-green:hover{background:rgba(34,197,94,0.15)}
+        .btn-red{border-color:var(--red);color:var(--red)}
+        .btn-red:hover{background:rgba(239,68,68,0.15)}
+        .add-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;background:var(--gold);color:#000;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;font-size:12px;transition:all 0.2s;text-decoration:none;letter-spacing:0.3px}
+        .add-btn:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(212,160,23,0.35)}
+        .form-group{margin-bottom:15px}
+        .form-group label{display:block;margin-bottom:5px;font-size:13px;color:var(--muted)}
+        .form-group input,.form-group select{width:100%;padding:10px 13px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s}
+        .form-group input:focus,.form-group select:focus{border-color:var(--gold)}
+        .alert{padding:12px 15px;border-radius:11px;margin-bottom:14px;font-size:13px}
+        .alert-warn{background:rgba(212,160,23,0.1);border:1px solid rgba(212,160,23,0.3);color:var(--gold)}
         .alert-red{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red)}
-        .form-group{margin-bottom:16px}
-        .form-group label{display:block;margin-bottom:6px;font-size:13px;color:var(--muted)}
-        .form-group input,.form-group select{width:100%;padding:11px 14px;background:#1a1a26;border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s}
-        .form-group input:focus,.form-group select:focus{border-color:var(--accent)}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+        .alert-green{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:var(--green)}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
         .fade-up{animation:fadeUp 0.5s ease}
-        .plan-card{cursor:pointer}
-        .plan-card:hover{border-color:var(--accent)!important;box-shadow:0 0 20px rgba(124,58,237,0.2)}
+        .plan-card{cursor:pointer;transition:transform 0.25s,border-color 0.25s,box-shadow 0.25s}
+        .plan-card:hover{transform:translateY(-5px);border-color:var(--gold);box-shadow:0 10px 28px rgba(212,160,23,0.18)}
     </style>
 </head>
 <body>
 <div class="navbar">
-    <span class="brand">🏋️ Golden Gym</span>
-    <a href="/member" class="nav-item {% if request.path == '/member' %}nav-active{% endif %}">🏠 Home</a>
-    <a href="/member/plan" class="nav-item {% if request.path == '/member/plan' %}nav-active{% endif %}">📋 Plans</a>
-    <a href="/member/change_password" class="nav-item">🔑 Password</a>
-    <a href="/member/logout" class="nav-item" style="margin-left:auto;color:var(--red)">🚪 Logout</a>
+    <div class="logo-wrap">
+        <img src="/static/logo.png" class="logo-img" onerror="this.style.display='none'" alt="logo">
+        <span class="brand">Golden Gym</span>
+    </div>
+    <a href="/member" class="nav-item {% if request.path=='/member' %}nav-active{% endif %}">Home</a>
+    <a href="/member/plan" class="nav-item {% if request.path=='/member/plan' %}nav-active{% endif %}">Plans</a>
+    <a href="/member/change_password" class="nav-item">Password</a>
+    <div class="theme-switcher">
+        <button class="theme-btn" onclick="setTheme('light')">☀️</button>
+        <button class="theme-btn" onclick="setTheme('dark')">🌙</button>
+        <button class="theme-btn" onclick="setTheme('auto')">⚙️</button>
+    </div>
+    <a href="/member/logout" class="nav-item" style="margin-left:8px;color:var(--red)">Logout</a>
 </div>
 <div class="container fade-up">
     {% block content %}{% endblock %}
 </div>
+<script>
+function setTheme(t){
+    const html=document.documentElement;
+    const btns=document.querySelectorAll('.theme-btn');
+    btns.forEach(b=>b.classList.remove('active'));
+    if(t==='auto'){
+        const dark=window.matchMedia('(prefers-color-scheme: dark)').matches;
+        html.setAttribute('data-theme',dark?'dark':'light');
+        btns[2].classList.add('active');
+        localStorage.setItem('gym-theme','auto');
+    } else {
+        html.setAttribute('data-theme',t);
+        localStorage.setItem('gym-theme',t);
+        if(t==='light') btns[0].classList.add('active');
+        else btns[1].classList.add('active');
+    }
+}
+(function(){
+    const saved=localStorage.getItem('gym-theme')||'dark';
+    const btns=document.querySelectorAll('.theme-btn');
+    if(saved==='auto'){
+        const dark=window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+        if(btns[2]) btns[2].classList.add('active');
+    } else {
+        document.documentElement.setAttribute('data-theme',saved);
+        if(saved==='light'&&btns[0]) btns[0].classList.add('active');
+        else if(btns[1]) btns[1].classList.add('active');
+    }
+})();
+</script>
 </body>
 </html>
