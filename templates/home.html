@@ -1,19 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="hero">
-    <div class="hero-title">Welcome, Kishore 👋</div>
-    <div class="hero-sub"><span class="live-dot"></span>Live Dashboard</div>
+    <div class="hero-shimmer"></div>
+    <div class="hero-title">Welcome, Owner 👑</div>
+    <div class="hero-sub"><span class="live-dot"></span>Live Dashboard · Golden Gym</div>
 </div>
 
 {% if total_warned > 0 %}
-<div class="alert alert-warn">⚠️ {{ total_warned }} member(s) haven't paid for 1+ month — check Unpaid section!</div>
+<div class="alert alert-warn">⚠️ {{ total_warned }} member(s) haven't paid for 1+ month!</div>
+{% endif %}
+{% if new_registrations > 0 %}
+<div class="alert alert-green">🆕 {{ new_registrations }} new member(s) registered — waiting to select a plan!</div>
 {% endif %}
 
 <div class="stats-grid">
     <div class="stat-card">
         <div class="stat-icon">👥</div>
-        <div class="stat-val purple">{{ total_members }}</div>
-        <div class="stat-label">Total Members</div>
+        <div class="stat-val gold">{{ total_members }}</div>
+        <div class="stat-label">Active Members</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">🆕</div>
+        <div class="stat-val gold">{{ new_registrations }}</div>
+        <div class="stat-label">New Registrations</div>
     </div>
     <div class="stat-card">
         <div class="stat-icon">✅</div>
@@ -23,7 +32,7 @@
     <div class="stat-card">
         <div class="stat-icon">❌</div>
         <div class="stat-val red">{{ total_unpaid }}</div>
-        <div class="stat-label">Unpaid</div>
+        <div class="stat-label">Fee Unpaid</div>
     </div>
     <div class="stat-card">
         <div class="stat-icon">💰</div>
@@ -42,18 +51,91 @@
     </div>
     <div class="stat-card">
         <div class="stat-icon">📅</div>
-        <div class="stat-val cyan">{{ today_count }}</div>
+        <div class="stat-val gold">{{ today_count }}</div>
         <div class="stat-label">Present Today</div>
     </div>
     <div class="stat-card">
         <div class="stat-icon">🚫</div>
         <div class="stat-val red">{{ total_inactive }}</div>
-        <div class="stat-label">Inactive Members</div>
+        <div class="stat-label">Inactive</div>
     </div>
 </div>
 
-<div class="row-flex">
-    <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px">🔄 Month End Actions</span>
-    <a href="/monthly_check" class="btn btn-gold" onclick="return confirm('Run monthly check? This will flag/remove unpaid members.')">Run Monthly Check</a>
+<div class="section-title">Finance Overview</div>
+<div class="card">
+    <canvas id="financeChart" height="100"></canvas>
 </div>
+
+<div class="section-title">Today's Attendance</div>
+<div class="card">
+    {% if today_att %}
+    <table>
+        <tr><th>Member</th><th>Check In</th><th>Check Out</th><th>Status</th></tr>
+        {% for r in today_att %}
+        <tr>
+            <td><b>{{ r.member_name }}</b></td>
+            <td>{{ r.check_in or '—' }}</td>
+            <td>{{ r.check_out or '—' }}</td>
+            <td>
+                {% if r.auto_checkout %}<span class="badge badge-warn">Auto Out</span>
+                {% elif r.check_out %}<span class="badge badge-green">Complete</span>
+                {% else %}<span class="badge" style="background:rgba(34,197,94,0.12);color:var(--green)">🟢 In Gym</span>{% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <div style="text-align:center;color:var(--muted);padding:24px;font-weight:300">No attendance recorded today yet!</div>
+    {% endif %}
+</div>
+
+<div class="row-flex">
+    <span style="font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:var(--gold)">Month End Actions</span>
+    <a href="/monthly_check" class="btn btn-gold" onclick="return confirm('Run monthly check? Unpaid members will be flagged or removed.')">Run Monthly Check</a>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+const goldColor = '#D4A017';
+const ctx = document.getElementById('financeChart').getContext('2d');
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Income', 'Expenses', 'Profit'],
+        datasets: [{
+            label: 'This Month (₹)',
+            data: [{{ monthly_income }}, {{ monthly_expense }}, {{ profit }}],
+            backgroundColor: [
+                'rgba(212,160,23,0.7)',
+                'rgba(239,68,68,0.7)',
+                '{{ "rgba(34,197,94,0.7)" if profit > 0 else "rgba(239,68,68,0.7)" }}'
+            ],
+            borderColor: [
+                '#D4A017',
+                '#EF4444',
+                '{{ "#22C55E" if profit > 0 else "#EF4444" }}'
+            ],
+            borderWidth: 1,
+            borderRadius: 8
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {labels: {color: isDark ? '#FFF8E1' : '#1A1200', font: {family: 'Inter'}}},
+        },
+        scales: {
+            y: {
+                ticks: {color: isDark ? '#A89060' : '#6B5A2A', callback: v => '₹' + v},
+                grid: {color: 'rgba(212,160,23,0.1)'}
+            },
+            x: {
+                ticks: {color: isDark ? '#A89060' : '#6B5A2A'},
+                grid: {display: false}
+            }
+        }
+    }
+});
+</script>
 {% endblock %}

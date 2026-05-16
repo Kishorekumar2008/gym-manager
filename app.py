@@ -303,6 +303,12 @@ def show_unpaid():
         total_pending=total_pending
     )
 
+@app.route("/member_passwords")
+@login_required
+def member_passwords():
+    all_members = members.get_all_members_with_passwords()
+    return render_template("member_passwords.html", members=all_members)
+
 @app.route("/plans")
 @login_required
 def show_plans():

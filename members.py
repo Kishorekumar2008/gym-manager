@@ -147,6 +147,13 @@ def run_monthly_check():
     cursor.execute("UPDATE members SET paid=0 WHERE status='active'")
     conn.commit()
     conn.close()
-
+#get all pass
+def get_all_members_with_passwords():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM members ORDER BY status, id DESC")
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
 def show_members():
     pass

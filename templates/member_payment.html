@@ -1,25 +1,27 @@
 {% extends "member_base.html" %}
 {% block content %}
 <div class="page-title">💳 Payment</div>
-<div class="card" style="max-width:480px;margin:0 auto;text-align:center">
-    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:6px">{{ plan.label }} Plan</div>
-    <div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--accent);margin-bottom:4px">₹{{ total }}</div>
-    <div style="color:var(--muted);font-size:13px;margin-bottom:24px">Valid until {{ expiry }}</div>
+<div class="card" style="max-width:500px;margin:0 auto;text-align:center">
+    <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:var(--gold);margin-bottom:4px">{{ plan.label }} Plan</div>
+    <div style="font-family:'Playfair Display',serif;font-size:38px;font-weight:900;color:var(--gold);margin-bottom:4px">₹{{ total }}</div>
+    <div style="color:var(--muted);font-size:13px;margin-bottom:24px;font-weight:300">Valid until {{ expiry }}</div>
 
-    <div style="background:#1a1a26;border-radius:16px;padding:24px;margin-bottom:20px">
-        <div style="font-size:13px;color:var(--muted);margin-bottom:12px">Pay via UPI</div>
-        <div style="font-size:80px;margin-bottom:12px">📱</div>
-        <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--accent2);margin-bottom:8px">{{ upi_id }}</div>
-        <button onclick="navigator.clipboard.writeText('{{ upi_id }}');this.textContent='✅ Copied!'" class="btn btn-green" style="margin-bottom:12px">📋 Copy UPI ID</button>
-        <div style="font-size:12px;color:var(--muted)">Open any UPI app → Pay → Enter this ID</div>
+    <div style="background:var(--surface2);border-radius:14px;padding:24px;margin-bottom:18px;border:1px solid var(--border)">
+        <div style="font-size:13px;color:var(--muted);margin-bottom:10px;font-weight:300">Pay via UPI</div>
+        <div style="font-size:56px;margin-bottom:12px">📱</div>
+        <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--gold);margin-bottom:10px">{{ upi_id }}</div>
+        <button onclick="navigator.clipboard.writeText('{{ upi_id }}');this.textContent='✅ Copied!';setTimeout(()=>this.textContent='📋 Copy UPI ID',2000)" class="btn btn-gold" style="margin-bottom:10px;padding:8px 18px">📋 Copy UPI ID</button>
+        <div style="font-size:12px;color:var(--muted);font-weight:300">Open any UPI app → Pay → Enter this ID</div>
     </div>
 
-    <div class="alert alert-warn" style="text-align:left;margin-bottom:20px">
-        ⚠️ After payment, show your payment screenshot to the gym owner. Owner will confirm your payment and activate your membership.
+    <div class="alert alert-warn" style="text-align:left;margin-bottom:18px">
+        ⚠️ After payment, <b>contact the gym owner</b> to confirm your payment and activate your membership.<br><br>
+        📞 <b style="color:var(--gold);font-size:15px">88255 58615</b><br><br>
+        <span style="font-size:12px;font-weight:300">The owner will mark your payment as confirmed on the portal.</span>
     </div>
 
-    <div style="display:flex;gap:10px;justify-content:center">
-        <a href="/member" class="btn btn-green">✅ Done, I've Paid</a>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <a href="/member" class="add-btn">✅ Done, I've Paid</a>
         <a href="/member/plan" class="btn btn-red">← Change Plan</a>
     </div>
 </div>

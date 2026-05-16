@@ -1,20 +1,35 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>⚠️ Unpaid Members</h1>
+<div class="page-title">⚠️ Unpaid Members</div>
+{% if unpaid|length == 0 %}
+<div class="card" style="text-align:center;padding:40px;color:var(--muted)">
+    🎉 All members have paid their fees!
+</div>
+{% else %}
+<div class="alert alert-warn">Total pending: <b>₹{{ total_pending }}</b> from {{ unpaid|length }} member(s)</div>
 <div class="card">
-    <h2>Total Pending: ₹{{ total_pending }}</h2>
     <table>
-        <tr><th>ID</th><th>Name</th><th>Phone</th><th>Membership</th><th>Fee Due</th><th>Action</th></tr>
+        <tr><th>Member</th><th>Phone</th><th>Plan</th><th>Fee Due</th><th>Months Unpaid</th><th>Action</th></tr>
         {% for m in unpaid %}
         <tr>
-            <td>{{ m.id }}</td>
-            <td>{{ m.name }}</td>
+            <td><b>{{ m.name }}</b></td>
             <td>{{ m.phone }}</td>
-            <td>{{ m.membership_type }}</td>
-            <td class="unpaid">₹{{ m.fee }}</td>
-            <td><a href="/mark_paid/{{ m.id }}" class="btn btn-green">Mark Paid</a></td>
+            <td>{{ m.membership_type|title if m.membership_type else '—' }}</td>
+            <td class="red"><b>₹{{ m.total_fee }}</b></td>
+            <td>
+                {% if m.months_unpaid >= 2 %}<span class="badge badge-red">{{ m.months_unpaid }} months</span>
+                {% elif m.months_unpaid == 1 %}<span class="badge badge-warn">1 month</span>
+                {% else %}<span class="badge badge-muted">Current</span>{% endif %}
+            </td>
+            <td style="display:flex;gap:6px">
+                <a href="/mark_paid/{{ m.id }}" class="btn btn-green">Mark Paid</a>
+                {% if m.months_unpaid >= 1 %}
+                <a href="/soft_remove/{{ m.id }}" class="btn btn-red" onclick="return confirm('Remove {{ m.name }}?')">Remove</a>
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </table>
 </div>
+{% endif %}
 {% endblock %}
