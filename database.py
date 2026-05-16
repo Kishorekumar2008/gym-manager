@@ -13,7 +13,6 @@ def setup_database():
     conn = get_connection()
     cursor = conn.cursor()
 
-    # Members table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS members (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -21,12 +20,15 @@ def setup_database():
             phone TEXT NOT NULL,
             membership_type TEXT NOT NULL,
             fee INTEGER NOT NULL,
+            admission_fee INTEGER DEFAULT 0,
+            total_fee INTEGER NOT NULL,
             paid INTEGER DEFAULT 0,
+            status TEXT DEFAULT 'active',
+            months_unpaid INTEGER DEFAULT 0,
             join_date TEXT DEFAULT CURRENT_DATE
         )
     """)
 
-    # Finance table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS finance (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,7 +40,6 @@ def setup_database():
         )
     """)
 
-    # Attendance table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS attendance (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -50,7 +51,6 @@ def setup_database():
         )
     """)
 
-    # Expenses table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS expenses (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -65,4 +65,3 @@ def setup_database():
 
     conn.commit()
     conn.close()
-    print("Database ready!")

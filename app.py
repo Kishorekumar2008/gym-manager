@@ -4,31 +4,50 @@ import members
 import finance
 import attendance
 import expense
-import search
 from datetime import datetime
 
 app = Flask(__name__)
 setup_database()
+
+PLANS = members.PLANS
 
 @app.route("/")
 def home():
     all_members = members.get_all_members()
     paid = [m for m in all_members if m["paid"]]
     unpaid = [m for m in all_members if not m["paid"]]
-    total_collected = sum(m["fee"] for m in paid)
-    total_pending = sum(m["fee"] for m in unpaid)
+    warned = members.get_warned_members()
+    inactive = members.get_inactive_members()
+    total_collected = sum(m["total_fee"] for m in paid)
+    total_pending = sum(m["total_fee"] for m in unpaid)
+    monthly_income = finance.get_monthly_total()
+    monthly_expense = expense.get_monthly_expense_total()
+    profit = monthly_income - monthly_expense
+    today_att = attendance.get_today_attendance()
     return render_template("home.html",
         total_members=len(all_members),
         total_paid=len(paid),
         total_unpaid=len(unpaid),
+        total_warned=len(warned),
+        total_inactive=len(inactive),
         total_collected=total_collected,
-        total_pending=total_pending
+        total_pending=total_pending,
+        monthly_income=monthly_income,
+        monthly_expense=monthly_expense,
+        profit=profit,
+        today_count=len(today_att)
     )
 
 @app.route("/members")
 def show_members():
     all_members = members.get_all_members()
-    return render_template("members.html", members=all_members)
+    warned = members.get_warned_members()
+    warned_ids = [m["id"] for m in warned]
+    return render_template("members.html",
+        members=all_members,
+        warned_ids=warned_ids,
+        plans=PLANS
+    )
 
 @app.route("/add_member", methods=["GET", "POST"])
 def add_member():
@@ -36,15 +55,35 @@ def add_member():
         name = request.form["name"]
         phone = request.form["phone"]
         membership = request.form["membership"]
-        fee = int(request.form["fee"])
-        members.add_member(name, phone, membership, fee)
+        is_first = "admission" in request.form
+        members.add_member(name, phone, membership, is_first)
         return redirect(url_for("show_members"))
-    return render_template("add_member.html")
+    return render_template("add_member.html", plans=PLANS)
 
 @app.route("/mark_paid/<int:member_id>")
 def mark_paid(member_id):
     members.mark_paid(member_id)
     return redirect(url_for("show_members"))
+
+@app.route("/soft_remove/<int:member_id>")
+def soft_remove(member_id):
+    members.soft_remove_member(member_id)
+    return redirect(url_for("show_members"))
+
+@app.route("/inactive")
+def inactive_members():
+    inactive = members.get_inactive_members()
+    return render_template("inactive.html", members=inactive)
+
+@app.route("/reactivate/<int:member_id>")
+def reactivate(member_id):
+    members.reactivate_member(member_id)
+    return redirect(url_for("inactive_members"))
+
+@app.route("/monthly_check")
+def monthly_check():
+    members.run_monthly_check()
+    return redirect(url_for("home"))
 
 @app.route("/attendance")
 def show_attendance():
@@ -112,11 +151,15 @@ def add_expense():
 def show_unpaid():
     all_members = members.get_all_members()
     unpaid = [m for m in all_members if not m["paid"]]
-    total_pending = sum(m["fee"] for m in unpaid)
+    total_pending = sum(m["total_fee"] for m in unpaid)
     return render_template("unpaid.html",
         unpaid=unpaid,
         total_pending=total_pending
     )
+
+@app.route("/plans")
+def show_plans():
+    return render_template("plans.html", plans=PLANS)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)

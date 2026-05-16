@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-title">🚫 Inactive Members</div>
+{% if members|length == 0 %}
+<div class="card" style="text-align:center;color:var(--muted);padding:40px">
+    No inactive members! Everyone is active 💪
+</div>
+{% else %}
+<div class="alert alert-warn">These members were removed due to 2+ months unpaid fees. You can reactivate them if they return.</div>
+<div class="card">
+    <table>
+        <tr><th>Member</th><th>Phone</th><th>Plan</th><th>Fee</th><th>Action</th></tr>
+        {% for m in members %}
+        <tr>
+            <td><b>{{ m.name }}</b></td>
+            <td>{{ m.phone }}</td>
+            <td>{{ m.membership_type }}</td>
+            <td>₹{{ m.total_fee }}</td>
+            <td><a href="/reactivate/{{ m.id }}" class="btn btn-green">Reactivate</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endif %}
+{% endblock %}

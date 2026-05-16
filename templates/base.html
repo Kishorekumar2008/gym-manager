@@ -1,96 +1,123 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>🏋️ Gym Manager</title>
+    <title>🏋️ Golden Gym Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #1a1a2e; color: #eee; }
-        .navbar {
-            background: #16213e;
-            padding: 15px 30px;
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            border-bottom: 2px solid #e94560;
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a26;
+            --accent:#7c3aed;--accent2:#06b6d4;--gold:#f59e0b;
+            --green:#10b981;--red:#ef4444;--text:#f1f5f9;--muted:#64748b;
+            --border:rgba(124,58,237,0.2)
         }
-        .navbar a {
-            color: #eee;
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            transition: background 0.3s;
+        body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+        .navbar{
+            display:flex;align-items:center;gap:6px;padding:14px 28px;
+            background:rgba(18,18,26,0.97);border-bottom:1px solid var(--border);
+            position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)
         }
-        .navbar a:hover { background: #e94560; }
-        .navbar .brand { font-size: 20px; font-weight: bold; color: #e94560; margin-right: 20px; }
-        .container { padding: 30px; max-width: 1200px; margin: 0 auto; }
-        .card {
-            background: #16213e;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #0f3460;
+        .brand{
+            font-family:'Syne',sans-serif;font-weight:800;font-size:20px;
+            background:linear-gradient(135deg,var(--accent),var(--accent2));
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-right:16px
         }
-        .card h2 { color: #e94560; margin-bottom: 15px; }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+        .nav-item{
+            padding:8px 14px;border-radius:8px;font-size:13px;color:var(--muted);
+            text-decoration:none;transition:all 0.2s;font-family:'DM Sans',sans-serif
         }
-        .stat-card {
-            background: #16213e;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            border: 1px solid #0f3460;
+        .nav-item:hover{background:rgba(124,58,237,0.15);color:var(--text)}
+        .nav-active{background:rgba(124,58,237,0.15);color:var(--text)}
+        .container{padding:28px;max-width:1200px;margin:0 auto}
+        .card{
+            background:var(--surface);border:1px solid var(--border);
+            border-radius:16px;padding:22px;margin-bottom:20px
         }
-        .stat-card .number { font-size: 36px; font-weight: bold; color: #e94560; }
-        .stat-card .label { color: #aaa; margin-top: 5px; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #0f3460; padding: 12px; text-align: left; }
-        td { padding: 12px; border-bottom: 1px solid #0f3460; }
-        tr:hover { background: #0f3460; }
-        .btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 14px;
-            display: inline-block;
+        .page-title{
+            font-family:'Syne',sans-serif;font-size:24px;font-weight:800;
+            margin-bottom:20px;display:flex;align-items:center;gap:10px
         }
-        .btn-green { background: #27ae60; color: white; }
-        .btn-red { background: #e94560; color: white; }
-        .btn-blue { background: #2980b9; color: white; }
-        .btn:hover { opacity: 0.8; }
-        .paid { color: #27ae60; font-weight: bold; }
-        .unpaid { color: #e94560; font-weight: bold; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; color: #aaa; }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px;
-            background: #0f3460;
-            border: 1px solid #e94560;
-            border-radius: 5px;
-            color: #eee;
-            font-size: 16px;
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+        .stat-card{
+            background:var(--surface);border:1px solid var(--border);border-radius:14px;
+            padding:18px;position:relative;overflow:hidden;
+            transition:transform 0.2s,border-color 0.2s
         }
-        h1 { color: #e94560; margin-bottom: 20px; }
+        .stat-card:hover{transform:translateY(-3px);border-color:var(--accent)}
+        .stat-icon{font-size:22px;margin-bottom:10px}
+        .stat-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:800}
+        .stat-label{font-size:12px;color:var(--muted);margin-top:4px}
+        .green{color:var(--green)}.red{color:var(--red)}.gold{color:var(--gold)}.cyan{color:var(--accent2)}.purple{color:var(--accent)}
+        table{width:100%;border-collapse:collapse}
+        th{background:var(--surface2);padding:12px 16px;text-align:left;font-size:12px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:0.5px}
+        td{padding:13px 16px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px}
+        tr:last-child td{border-bottom:none}
+        tr:hover td{background:rgba(124,58,237,0.05)}
+        .badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+        .badge-green{background:rgba(16,185,129,0.15);color:var(--green)}
+        .badge-red{background:rgba(239,68,68,0.15);color:var(--red)}
+        .badge-gold{background:rgba(245,158,11,0.15);color:var(--gold)}
+        .badge-cyan{background:rgba(6,182,212,0.15);color:var(--accent2)}
+        .badge-purple{background:rgba(124,58,237,0.15);color:var(--accent)}
+        .badge-warn{background:rgba(245,158,11,0.2);color:var(--gold)}
+        .btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.2s;text-decoration:none;display:inline-block}
+        .btn-primary{background:var(--accent);color:#fff}
+        .btn-primary:hover{background:#6d28d9}
+        .btn-green{background:rgba(16,185,129,0.2);color:var(--green);border:1px solid rgba(16,185,129,0.3)}
+        .btn-green:hover{background:rgba(16,185,129,0.35)}
+        .btn-red{background:rgba(239,68,68,0.2);color:var(--red);border:1px solid rgba(239,68,68,0.3)}
+        .btn-red:hover{background:rgba(239,68,68,0.35)}
+        .btn-gold{background:rgba(245,158,11,0.2);color:var(--gold);border:1px solid rgba(245,158,11,0.3)}
+        .btn-gold:hover{background:rgba(245,158,11,0.35)}
+        .add-btn{
+            display:inline-flex;align-items:center;gap:6px;padding:10px 20px;
+            border-radius:10px;background:linear-gradient(135deg,var(--accent),#4f46e5);
+            color:#fff;border:none;cursor:pointer;font-family:'Syne',sans-serif;
+            font-weight:700;font-size:13px;transition:all 0.2s;text-decoration:none
+        }
+        .add-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(124,58,237,0.4)}
+        .form-group{margin-bottom:18px}
+        .form-group label{display:block;margin-bottom:6px;font-size:13px;color:var(--muted)}
+        .form-group input,.form-group select{
+            width:100%;padding:11px 14px;background:var(--surface2);
+            border:1px solid var(--border);border-radius:10px;color:var(--text);
+            font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s
+        }
+        .form-group input:focus,.form-group select:focus{border-color:var(--accent)}
+        .form-group select option{background:var(--surface2)}
+        .row-flex{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;flex-wrap:wrap}
+        .section-divider{height:1px;background:var(--border);margin:20px 0}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+        .fade-up{animation:fadeUp 0.5s ease}
+        .warn-row td{background:rgba(245,158,11,0.05)!important}
+        .hero{
+            background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(6,182,212,0.06));
+            border:1px solid var(--border);border-radius:20px;padding:24px 28px;
+            margin-bottom:24px;position:relative;overflow:hidden
+        }
+        .hero-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800}
+        .hero-sub{color:var(--muted);font-size:13px;margin-top:4px}
+        .live-dot{width:8px;height:8px;background:var(--green);border-radius:50%;display:inline-block;margin-right:6px;animation:pulse 2s infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+        .alert{padding:14px 18px;border-radius:12px;margin-bottom:16px;font-size:13px;display:flex;align-items:center;gap:10px}
+        .alert-warn{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:var(--gold)}
+        .alert-red{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red)}
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <span class="brand">🏋️ GymManager</span>
-        <a href="/">🏠 Dashboard</a>
-        <a href="/members">👥 Members</a>
-        <a href="/attendance">📅 Attendance</a>
-        <a href="/finance">💰 Finance</a>
-        <a href="/expenses">📉 Expenses</a>
-        <a href="/unpaid">⚠️ Unpaid</a>
-    </div>
-    <div class="container">
-        {% block content %}{% endblock %}
-    </div>
+<div class="navbar">
+    <span class="brand">🏋️ Golden Gym</span>
+    <a href="/" class="nav-item {% if request.path == '/' %}nav-active{% endif %}">🏠 Dashboard</a>
+    <a href="/members" class="nav-item {% if request.path == '/members' %}nav-active{% endif %}">👥 Members</a>
+    <a href="/attendance" class="nav-item {% if request.path == '/attendance' %}nav-active{% endif %}">📅 Attendance</a>
+    <a href="/finance" class="nav-item {% if request.path == '/finance' %}nav-active{% endif %}">💰 Finance</a>
+    <a href="/expenses" class="nav-item {% if request.path == '/expenses' %}nav-active{% endif %}">📉 Expenses</a>
+    <a href="/unpaid" class="nav-item {% if request.path == '/unpaid' %}nav-active{% endif %}">⚠️ Unpaid</a>
+    <a href="/inactive" class="nav-item {% if request.path == '/inactive' %}nav-active{% endif %}">🚫 Inactive</a>
+    <a href="/plans" class="nav-item {% if request.path == '/plans' %}nav-active{% endif %}">📋 Plans</a>
+</div>
+<div class="container fade-up">
+    {% block content %}{% endblock %}
+</div>
 </body>
 </html>

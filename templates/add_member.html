@@ -1,30 +1,64 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>➕ Add New Member</h1>
-<div class="card" style="max-width:500px">
+<div class="page-title">➕ Add New Member</div>
+<div class="card" style="max-width:520px">
     <form method="POST">
         <div class="form-group">
             <label>Full Name</label>
-            <input type="text" name="name" placeholder="Enter name" required>
+            <input type="text" name="name" placeholder="Enter member name" required>
         </div>
         <div class="form-group">
             <label>Phone Number</label>
-            <input type="text" name="phone" placeholder="Enter phone" required>
+            <input type="text" name="phone" placeholder="Enter phone number" required>
         </div>
         <div class="form-group">
-            <label>Membership Type</label>
-            <select name="membership">
-                <option value="monthly">Monthly</option>
-                <option value="quarterly">Quarterly</option>
-                <option value="yearly">Yearly</option>
+            <label>Membership Plan</label>
+            <select name="membership" id="plan-select" onchange="updateFee()">
+                <option value="monthly">Monthly — ₹700/mo</option>
+                <option value="quarterly">Quarterly — ₹1,800/3mo</option>
+                <option value="half_yearly">Half Yearly — ₹3,400/6mo</option>
+                <option value="yearly">Yearly — ₹6,000/yr</option>
             </select>
         </div>
-        <div class="form-group">
-            <label>Fee Amount (₹)</label>
-            <input type="number" name="fee" placeholder="Enter fee" required>
+        <div class="form-group" id="admission-group">
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+                <input type="checkbox" name="admission" id="admission-check" checked onchange="updateFee()" style="width:auto;accent-color:var(--accent)">
+                First month? Add admission fee ₹200
+            </label>
         </div>
-        <button type="submit" class="btn btn-green">Add Member</button>
-        <a href="/members" class="btn btn-red" style="margin-left:10px">Cancel</a>
+        <div class="card" style="background:var(--surface2);margin-bottom:18px;padding:16px">
+            <div style="font-size:13px;color:var(--muted);margin-bottom:6px">Fee Breakdown</div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+                <span>Plan Fee</span><span id="fee-display">₹700</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px" id="admission-row">
+                <span>Admission Fee</span><span>₹200</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:700;border-top:1px solid var(--border);padding-top:8px">
+                <span>Total</span><span id="total-display" style="color:var(--accent)">₹900</span>
+            </div>
+        </div>
+        <div style="display:flex;gap:10px">
+            <button type="submit" class="add-btn">Add Member</button>
+            <a href="/members" class="btn btn-red">Cancel</a>
+        </div>
     </form>
 </div>
+<script>
+const fees = {monthly:700, quarterly:1800, half_yearly:3400, yearly:6000};
+function updateFee(){
+    const plan = document.getElementById('plan-select').value;
+    const fee = fees[plan];
+    const isMonthly = plan === 'monthly';
+    const admGroup = document.getElementById('admission-group');
+    const admRow = document.getElementById('admission-row');
+    const admCheck = document.getElementById('admission-check');
+    admGroup.style.display = isMonthly ? 'block' : 'none';
+    admRow.style.display = isMonthly && admCheck.checked ? 'flex' : 'none';
+    const admission = isMonthly && admCheck.checked ? 200 : 0;
+    document.getElementById('fee-display').textContent = '₹' + fee.toLocaleString();
+    document.getElementById('total-display').textContent = '₹' + (fee + admission).toLocaleString();
+}
+updateFee();
+</script>
 {% endblock %}

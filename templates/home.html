@@ -1,26 +1,59 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>📊 Dashboard</h1>
+<div class="hero">
+    <div class="hero-title">Welcome, Kishore 👋</div>
+    <div class="hero-sub"><span class="live-dot"></span>Live Dashboard</div>
+</div>
+
+{% if total_warned > 0 %}
+<div class="alert alert-warn">⚠️ {{ total_warned }} member(s) haven't paid for 1+ month — check Unpaid section!</div>
+{% endif %}
+
 <div class="stats-grid">
     <div class="stat-card">
-        <div class="number">{{ total_members }}</div>
-        <div class="label">Total Members</div>
+        <div class="stat-icon">👥</div>
+        <div class="stat-val purple">{{ total_members }}</div>
+        <div class="stat-label">Total Members</div>
     </div>
     <div class="stat-card">
-        <div class="number" style="color:#27ae60">{{ total_paid }}</div>
-        <div class="label">Paid Members</div>
+        <div class="stat-icon">✅</div>
+        <div class="stat-val green">{{ total_paid }}</div>
+        <div class="stat-label">Fee Paid</div>
     </div>
     <div class="stat-card">
-        <div class="number">{{ total_unpaid }}</div>
-        <div class="label">Unpaid Members</div>
+        <div class="stat-icon">❌</div>
+        <div class="stat-val red">{{ total_unpaid }}</div>
+        <div class="stat-label">Unpaid</div>
     </div>
     <div class="stat-card">
-        <div class="number" style="color:#27ae60">₹{{ total_collected }}</div>
-        <div class="label">Collected This Month</div>
+        <div class="stat-icon">💰</div>
+        <div class="stat-val gold">₹{{ monthly_income }}</div>
+        <div class="stat-label">Monthly Income</div>
     </div>
     <div class="stat-card">
-        <div class="number">₹{{ total_pending }}</div>
-        <div class="label">Pending Amount</div>
+        <div class="stat-icon">📉</div>
+        <div class="stat-val red">₹{{ monthly_expense }}</div>
+        <div class="stat-label">Expenses</div>
     </div>
+    <div class="stat-card">
+        <div class="stat-icon">📈</div>
+        <div class="stat-val {% if profit > 0 %}green{% else %}red{% endif %}">₹{{ profit }}</div>
+        <div class="stat-label">Net Profit</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-val cyan">{{ today_count }}</div>
+        <div class="stat-label">Present Today</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">🚫</div>
+        <div class="stat-val red">{{ total_inactive }}</div>
+        <div class="stat-label">Inactive Members</div>
+    </div>
+</div>
+
+<div class="row-flex">
+    <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px">🔄 Month End Actions</span>
+    <a href="/monthly_check" class="btn btn-gold" onclick="return confirm('Run monthly check? This will flag/remove unpaid members.')">Run Monthly Check</a>
 </div>
 {% endblock %}
