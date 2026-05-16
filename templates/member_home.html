@@ -1,0 +1,109 @@
+{% extends "member_base.html" %}
+{% block content %}
+<div class="hero">
+    <div class="hero-title">Hey, {{ member.name }}! 💪</div>
+    <div class="hero-sub">
+        {% if member.membership_type %}
+            Plan: <b>{{ member.membership_type|title }}</b> · Expires: <b>{{ member.expiry_date }}</b>
+            {% if member.paid %}· <span style="color:var(--green)">✅ Fee Paid</span>
+            {% else %}· <span style="color:var(--red)">❌ Fee Pending</span>{% endif %}
+        {% else %}
+            <span style="color:var(--gold)">⚠️ No active plan — select a plan to get started!</span>
+        {% endif %}
+    </div>
+</div>
+
+{% if not member.membership_type %}
+<div class="alert alert-warn">You haven't selected a plan yet. <a href="/member/plan" style="color:var(--gold)">Select Plan →</a></div>
+{% endif %}
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-val cyan">{{ recent_att|length }}</div>
+        <div class="stat-label">Days Attended</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">⏰</div>
+        <div class="stat-val">
+            {% if today_att %}
+                {% if today_att.check_out %}✅{% else %}🟢{% endif %}
+            {% else %}—{% endif %}
+        </div>
+        <div class="stat-label">Today's Status</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-val {% if member.paid %}green{% else %}red{% endif %}">
+            {% if member.paid %}Paid{% else %}Due{% endif %}
+        </div>
+        <div class="stat-label">Fee Status</div>
+    </div>
+</div>
+
+<div class="card">
+    <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:16px">📅 Today's Attendance</div>
+    {% if session_info %}
+    <div style="margin-bottom:14px;font-size:13px;color:var(--muted)">
+        Gym is <span style="color:var(--green)">OPEN</span> — {{ session_info|title }} session
+    </div>
+    {% else %}
+    <div style="margin-bottom:14px;font-size:13px;color:var(--red)">
+        Gym is CLOSED · Hours: Morning 5AM-10AM · Evening 4PM-10PM
+    </div>
+    {% endif %}
+
+    {% if today_att %}
+        <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:16px">
+            <div>
+                <div style="font-size:12px;color:var(--muted)">Check In</div>
+                <div style="font-size:20px;font-weight:700;color:var(--green)">{{ today_att.check_in }}</div>
+            </div>
+            {% if today_att.check_out %}
+            <div>
+                <div style="font-size:12px;color:var(--muted)">Check Out</div>
+                <div style="font-size:20px;font-weight:700;color:var(--red)">{{ today_att.check_out }}</div>
+            </div>
+            {% endif %}
+        </div>
+        {% if not today_att.check_out %}
+        <a href="/member/checkout" class="add-btn" style="background:linear-gradient(135deg,#ef4444,#dc2626)">🚪 Check Out</a>
+        {% else %}
+        <div style="color:var(--muted);font-size:13px">You have completed today's session!</div>
+        {% endif %}
+    {% else %}
+        {% if session_info %}
+        <a href="/member/checkin" class="add-btn">✅ Check In Now</a>
+        {% else %}
+        <div style="color:var(--muted);font-size:13px">Come back during gym hours to check in!</div>
+        {% endif %}
+    {% endif %}
+</div>
+
+<div class="card">
+    <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:16px">📋 Recent Attendance</div>
+    {% if recent_att %}
+    <table>
+        <tr><th>Date</th><th>Check In</th><th>Check Out</th><th>Status</th></tr>
+        {% for r in recent_att %}
+        <tr>
+            <td>{{ r.date }}</td>
+            <td>{{ r.check_in or '—' }}</td>
+            <td>{{ r.check_out or '—' }}</td>
+            <td>
+                {% if r.auto_checkout %}
+                    <span class="badge badge-warn">Auto checkout</span>
+                {% elif r.check_out %}
+                    <span class="badge badge-green">Complete</span>
+                {% else %}
+                    <span class="badge badge-cyan">Checked in</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">No attendance records yet!</div>
+    {% endif %}
+</div>
+{% endblock %}

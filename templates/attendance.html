@@ -1,28 +1,51 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>📅 Attendance — {{ today }}</h1>
+<div class="page-title">📅 Today's Attendance</div>
 <div class="card">
-    <h2>Mark Attendance</h2>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div style="font-size:13px;color:var(--muted)">{{ today }}</div>
+        <a href="/auto_checkout" class="btn btn-gold">⏰ Run Auto Checkout</a>
+    </div>
     <table>
-        <tr><th>ID</th><th>Name</th><th>Phone</th><th>Action</th></tr>
-        {% for m in all_members %}
+        <tr><th>Member</th><th>Check In</th><th>Check Out</th><th>Status</th></tr>
+        {% for r in today_att %}
         <tr>
-            <td>{{ m.id }}</td>
-            <td>{{ m.name }}</td>
-            <td>{{ m.phone }}</td>
-            <td><a href="/mark_attendance/{{ m.id }}/{{ m.name }}" class="btn btn-blue">Mark Present</a></td>
+            <td><b>{{ r.member_name }}</b></td>
+            <td>{{ r.check_in or '—' }}</td>
+            <td>{{ r.check_out or '—' }}</td>
+            <td>
+                {% if r.auto_checkout %}
+                    <span class="badge badge-warn">Auto Checkout</span>
+                {% elif r.check_out %}
+                    <span class="badge badge-green">Complete</span>
+                {% else %}
+                    <span class="badge badge-cyan">In Gym 🟢</span>
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
+        {% if today_att|length == 0 %}
+        <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:30px">No attendance today yet!</td></tr>
+        {% endif %}
     </table>
 </div>
 <div class="card">
-    <h2>Present Today ({{ today_list|length }})</h2>
-    {% if today_list|length == 0 %}
-        <p>Nobody marked present yet!</p>
-    {% else %}
-        {% for r in today_list %}
-            <p>✅ {{ r.member_name }}</p>
+    <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:14px">👥 All Active Members</div>
+    <table>
+        <tr><th>Member</th><th>Plan</th><th>Today</th></tr>
+        {% for m in all_members %}
+        <tr>
+            <td>{{ m.name }}</td>
+            <td>{{ m.membership_type or '—' }}</td>
+            <td>
+                {% if m.id in present_ids %}
+                    <span class="badge badge-green">✅ Present</span>
+                {% else %}
+                    <span class="badge badge-red">❌ Absent</span>
+                {% endif %}
+            </td>
+        </tr>
         {% endfor %}
-    {% endif %}
+    </table>
 </div>
 {% endblock %}

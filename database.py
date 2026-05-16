@@ -17,15 +17,18 @@ def setup_database():
         CREATE TABLE IF NOT EXISTS members (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
+            username TEXT UNIQUE NOT NULL,
             phone TEXT NOT NULL,
-            membership_type TEXT NOT NULL,
-            fee INTEGER NOT NULL,
+            password TEXT NOT NULL,
+            membership_type TEXT DEFAULT NULL,
+            fee INTEGER DEFAULT 0,
             admission_fee INTEGER DEFAULT 0,
-            total_fee INTEGER NOT NULL,
+            total_fee INTEGER DEFAULT 0,
             paid INTEGER DEFAULT 0,
-            status TEXT DEFAULT 'active',
+            status TEXT DEFAULT 'unverified',
             months_unpaid INTEGER DEFAULT 0,
-            join_date TEXT DEFAULT CURRENT_DATE
+            join_date TEXT DEFAULT CURRENT_DATE,
+            expiry_date TEXT DEFAULT NULL
         )
     """)
 
@@ -46,8 +49,11 @@ def setup_database():
             member_id INTEGER NOT NULL,
             member_name TEXT NOT NULL,
             date TEXT NOT NULL,
+            check_in TEXT DEFAULT NULL,
+            check_out TEXT DEFAULT NULL,
             month TEXT NOT NULL,
-            year INTEGER NOT NULL
+            year INTEGER NOT NULL,
+            auto_checkout INTEGER DEFAULT 0
         )
     """)
 

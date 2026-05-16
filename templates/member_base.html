@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🏋️ Golden Gym — Member Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a26;--accent:#7c3aed;--accent2:#06b6d4;--gold:#f59e0b;--green:#10b981;--red:#ef4444;--text:#f1f5f9;--muted:#64748b;--border:rgba(124,58,237,0.2)}
+        body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+        .navbar{display:flex;align-items:center;gap:6px;padding:14px 24px;background:rgba(18,18,26,0.97);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+        .brand{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-right:12px}
+        .nav-item{padding:7px 13px;border-radius:8px;font-size:13px;color:var(--muted);text-decoration:none;transition:all 0.2s}
+        .nav-item:hover{background:rgba(124,58,237,0.15);color:var(--text)}
+        .nav-active{background:rgba(124,58,237,0.15);color:var(--text)}
+        .container{padding:24px;max-width:900px;margin:0 auto}
+        .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:18px}
+        .page-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:18px}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+        .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+        .stat-icon{font-size:20px;margin-bottom:8px}
+        .stat-val{font-family:'Syne',sans-serif;font-size:22px;font-weight:800}
+        .stat-label{font-size:11px;color:var(--muted);margin-top:3px}
+        .green{color:var(--green)}.red{color:var(--red)}.gold{color:var(--gold)}.cyan{color:var(--accent2)}
+        table{width:100%;border-collapse:collapse}
+        th{background:var(--surface2);padding:10px 14px;text-align:left;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
+        td{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px}
+        tr:last-child td{border-bottom:none}
+        .badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+        .badge-green{background:rgba(16,185,129,0.15);color:var(--green)}
+        .badge-red{background:rgba(239,68,68,0.15);color:var(--red)}
+        .badge-gold{background:rgba(245,158,11,0.15);color:var(--gold)}
+        .badge-cyan{background:rgba(6,182,212,0.15);color:var(--accent2)}
+        .badge-warn{background:rgba(245,158,11,0.2);color:var(--gold)}
+        .btn{padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.2s;text-decoration:none;display:inline-block}
+        .btn-green{background:rgba(16,185,129,0.2);color:var(--green);border:1px solid rgba(16,185,129,0.3)}
+        .btn-red{background:rgba(239,68,68,0.2);color:var(--red);border:1px solid rgba(239,68,68,0.3)}
+        .add-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#4f46e5);color:#fff;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;transition:all 0.2s;text-decoration:none}
+        .add-btn:hover{opacity:0.85}
+        .hero{background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(6,182,212,0.06));border:1px solid var(--border);border-radius:18px;padding:22px 24px;margin-bottom:20px}
+        .hero-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800}
+        .hero-sub{color:var(--muted);font-size:13px;margin-top:4px}
+        .alert{padding:12px 16px;border-radius:10px;margin-bottom:14px;font-size:13px}
+        .alert-warn{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:var(--gold)}
+        .alert-red{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red)}
+        .form-group{margin-bottom:16px}
+        .form-group label{display:block;margin-bottom:6px;font-size:13px;color:var(--muted)}
+        .form-group input,.form-group select{width:100%;padding:11px 14px;background:#1a1a26;border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s}
+        .form-group input:focus,.form-group select:focus{border-color:var(--accent)}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+        .fade-up{animation:fadeUp 0.5s ease}
+        .plan-card{cursor:pointer}
+        .plan-card:hover{border-color:var(--accent)!important;box-shadow:0 0 20px rgba(124,58,237,0.2)}
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <span class="brand">🏋️ Golden Gym</span>
+    <a href="/member" class="nav-item {% if request.path == '/member' %}nav-active{% endif %}">🏠 Home</a>
+    <a href="/member/plan" class="nav-item {% if request.path == '/member/plan' %}nav-active{% endif %}">📋 Plans</a>
+    <a href="/member/change_password" class="nav-item">🔑 Password</a>
+    <a href="/member/logout" class="nav-item" style="margin-left:auto;color:var(--red)">🚪 Logout</a>
+</div>
+<div class="container fade-up">
+    {% block content %}{% endblock %}
+</div>
+</body>
+</html>

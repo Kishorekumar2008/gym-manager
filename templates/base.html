@@ -115,6 +115,7 @@
     <a href="/unpaid" class="nav-item {% if request.path == '/unpaid' %}nav-active{% endif %}">⚠️ Unpaid</a>
     <a href="/inactive" class="nav-item {% if request.path == '/inactive' %}nav-active{% endif %}">🚫 Inactive</a>
     <a href="/plans" class="nav-item {% if request.path == '/plans' %}nav-active{% endif %}">📋 Plans</a>
+    <a href="/logout" class="nav-item" style="margin-left:auto;color:var(--red)">🚪 Logout</a>
 </div>
 <div class="container fade-up">
     {% block content %}{% endblock %}
