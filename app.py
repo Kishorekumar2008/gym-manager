@@ -12,6 +12,7 @@ app = Flask(__name__)
 app.secret_key = "goldengym_secret_2026"
 UPI_ID = "9585194396@upi"
 GYM_NAME = "Golden Gym"
+OWNER_PHONE = "8825558615"
 
 setup_database()
 PLANS = members.PLANS
@@ -32,13 +33,10 @@ def member_login_required(f):
         return f(*args, **kwargs)
     return decorated
 
-# ─── OWNER AUTH ───
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        if check_credentials(username, password):
+        if check_credentials(request.form["username"], request.form["password"]):
             session["logged_in"] = True
             return redirect(url_for("home"))
         return render_template("login.html", error="Wrong username or password!")
@@ -49,7 +47,6 @@ def logout():
     session.clear()
     return redirect(url_for("login"))
 
-# ─── MEMBER AUTH ───
 @app.route("/member/register", methods=["GET", "POST"])
 def member_register():
     if request.method == "POST":
@@ -70,14 +67,12 @@ def member_register():
 def member_login():
     success = request.args.get("success")
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        member = members.member_login(username, password)
+        member = members.member_login(request.form["username"], request.form["password"])
         if member:
             session["member_id"] = member["id"]
             session["member_name"] = member["name"]
             return redirect(url_for("member_home"))
-        return render_template("member_login.html", error="Wrong username or password! Contact owner if forgotten.")
+        return render_template("member_login.html", error="Wrong username or password! Contact owner if forgotten.", success=None)
     return render_template("member_login.html", error=None, success=success)
 
 @app.route("/member/logout")
@@ -86,7 +81,6 @@ def member_logout():
     session.pop("member_name", None)
     return redirect(url_for("member_login"))
 
-# ─── MEMBER PORTAL ───
 @app.route("/member")
 @member_login_required
 def member_home():
@@ -105,14 +99,23 @@ def member_home():
 @app.route("/member/checkin")
 @member_login_required
 def member_checkin():
-    success, msg = attendance.check_in(session["member_id"], session["member_name"])
+    attendance.check_in(session["member_id"], session["member_name"])
     return redirect(url_for("member_home"))
 
 @app.route("/member/checkout")
 @member_login_required
 def member_checkout():
-    success, msg = attendance.check_out(session["member_id"])
+    attendance.check_out(session["member_id"])
     return redirect(url_for("member_home"))
+
+@app.route("/member/leave", methods=["GET", "POST"])
+@member_login_required
+def member_leave():
+    if request.method == "POST":
+        remark = request.form.get("remark", "")
+        attendance.mark_leave(session["member_id"], session["member_name"], remark)
+        return redirect(url_for("member_home"))
+    return render_template("member_leave.html")
 
 @app.route("/member/plan", methods=["GET", "POST"])
 @member_login_required
@@ -120,8 +123,13 @@ def member_plan():
     member = members.get_member_by_id(session["member_id"])
     if request.method == "POST":
         plan_type = request.form["membership"]
+        payment_method = request.form["payment_method"]
         is_first = member["membership_type"] is None
         total, expiry = members.select_plan(session["member_id"], plan_type, is_first)
+        members.create_payment_request(
+            session["member_id"], session["member_name"],
+            plan_type, total, payment_method
+        )
         return render_template("member_payment.html",
             member=member,
             plan=PLANS[plan_type],
@@ -129,7 +137,10 @@ def member_plan():
             total=total,
             expiry=expiry,
             upi_id=UPI_ID,
-            gym_name=GYM_NAME
+            owner_phone=OWNER_PHONE,
+            payment_method=payment_method,
+            gym_name=GYM_NAME,
+            is_extension=member["membership_type"] is not None
         )
     return render_template("member_plan.html", member=member, plans=PLANS)
 
@@ -144,11 +155,10 @@ def member_change_password():
             return render_template("member_change_password.html", error="Passwords don't match!")
         success, msg = members.change_password(session["member_id"], old, new)
         if success:
-            return render_template("member_change_password.html", success=msg)
-        return render_template("member_change_password.html", error=msg)
-    return render_template("member_change_password.html", error=None)
+            return render_template("member_change_password.html", success=msg, error=None)
+        return render_template("member_change_password.html", error=msg, success=None)
+    return render_template("member_change_password.html", error=None, success=None)
 
-# ─── OWNER PORTAL ───
 @app.route("/")
 @login_required
 def home():
@@ -158,6 +168,7 @@ def home():
     unpaid = [m for m in all_members if not m["paid"]]
     warned = members.get_warned_members()
     inactive = members.get_inactive_members()
+    pending_payments = members.get_pending_payments()
     monthly_income = finance.get_monthly_total()
     monthly_expense = expense.get_monthly_expense_total()
     profit = monthly_income - monthly_expense
@@ -175,8 +186,15 @@ def home():
         monthly_expense=monthly_expense,
         profit=profit,
         today_att=today_att,
-        today_count=len(today_att)
+        today_count=len(today_att),
+        pending_payments=pending_payments
     )
+
+@app.route("/approve_payment/<int:request_id>")
+@login_required
+def approve_payment(request_id):
+    members.approve_payment(request_id)
+    return redirect(url_for("home"))
 
 @app.route("/members")
 @login_required
@@ -228,7 +246,7 @@ def show_attendance():
     today_att = attendance.get_today_attendance()
     all_members = members.get_all_members()
     today = datetime.now().strftime("%d-%m-%Y")
-    present_ids = [r["member_id"] for r in today_att]
+    present_ids = [r["member_id"] for r in today_att if r["status"] == "present"]
     return render_template("attendance.html",
         today_att=today_att,
         all_members=all_members,
@@ -240,6 +258,7 @@ def show_attendance():
 @login_required
 def auto_checkout():
     attendance.auto_checkout_all()
+    attendance.auto_mark_absent()
     return redirect(url_for("show_attendance"))
 
 @app.route("/finance")
@@ -263,32 +282,26 @@ def show_finance():
 @login_required
 def add_income():
     if request.method == "POST":
-        source = request.form["source"]
-        amount = int(request.form["amount"])
-        finance.add_income(source, amount)
+        finance.add_income(request.form["source"], int(request.form["amount"]))
         return redirect(url_for("show_finance"))
     return render_template("add_income.html")
 
 @app.route("/expenses")
 @login_required
 def show_expenses():
-    now = datetime.now()
     records = expense.get_monthly_expenses()
     total = sum(r["amount"] for r in records)
     return render_template("expenses.html",
         records=records,
         total=total,
-        month=now.strftime("%B")
+        month=datetime.now().strftime("%B")
     )
 
 @app.route("/add_expense", methods=["GET", "POST"])
 @login_required
 def add_expense():
     if request.method == "POST":
-        category = request.form["category"]
-        description = request.form["description"]
-        amount = int(request.form["amount"])
-        expense.add_expense(category, description, amount)
+        expense.add_expense(request.form["category"], request.form["description"], int(request.form["amount"]))
         return redirect(url_for("show_expenses"))
     return render_template("add_expense.html")
 
@@ -298,21 +311,18 @@ def show_unpaid():
     all_members = members.get_all_members()
     unpaid = [m for m in all_members if not m["paid"]]
     total_pending = sum(m["total_fee"] for m in unpaid)
-    return render_template("unpaid.html",
-        unpaid=unpaid,
-        total_pending=total_pending
-    )
+    return render_template("unpaid.html", unpaid=unpaid, total_pending=total_pending)
+
+@app.route("/plans")
+@login_required
+def show_plans():
+    return render_template("plans.html", plans=PLANS)
 
 @app.route("/member_passwords")
 @login_required
 def member_passwords():
     all_members = members.get_all_members_with_passwords()
     return render_template("member_passwords.html", members=all_members)
-
-@app.route("/plans")
-@login_required
-def show_plans():
-    return render_template("plans.html", plans=PLANS)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)

@@ -1,21 +1,28 @@
 {% extends "member_base.html" %}
 {% block content %}
 <div class="page-title">📋 Select Your Plan</div>
+
+{% if member.membership_type %}
+<div class="alert alert-green" style="margin-bottom:18px">
+    ✅ You currently have <b>{{ member.membership_type|title }}</b> plan — expires <b>{{ member.expiry_date }}</b>.
+    Selecting a new plan will <b>extend</b> your current membership!
+</div>
+{% endif %}
+
 <form method="POST">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px">
         {% for key, plan in plans.items() %}
         <label style="cursor:pointer">
-            <input type="radio" name="membership" value="{{ key }}" style="display:none" class="plan-radio">
-            <div class="card plan-card" style="text-align:center;transition:all 0.2s;{% if key == 'half_yearly' %}border-color:rgba(245,158,11,0.5){% endif %}">
-                {% if key == 'half_yearly' %}<div style="background:var(--gold);color:#000;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px;font-family:'Syne',sans-serif">POPULAR</div>{% endif %}
+            <input type="radio" name="membership" value="{{ key }}" style="display:none" class="plan-radio" {% if loop.first %}checked{% endif %}>
+            <div class="card plan-card" id="card-{{ key }}" style="text-align:center;{% if loop.first %}border-color:var(--gold);box-shadow:0 0 20px rgba(212,160,23,0.2){% endif %}">
+                {% if key == 'half_yearly' %}
+                <div style="background:var(--gold);color:#000;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px;font-family:'Inter',sans-serif">POPULAR</div>
+                {% endif %}
                 <div style="font-size:28px;margin-bottom:8px">
-                    {% if key == 'monthly' %}🗓️
-                    {% elif key == 'quarterly' %}📆
-                    {% elif key == 'half_yearly' %}⭐
-                    {% else %}🏆{% endif %}
+                    {% if key=='monthly' %}🗓️{% elif key=='quarterly' %}📆{% elif key=='half_yearly' %}⭐{% else %}🏆{% endif %}
                 </div>
-                <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;margin-bottom:6px">{{ plan.label }}</div>
-                <div style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--accent)">₹{{ plan.fee }}</div>
+                <div style="font-family:'Playfair Display',serif;font-weight:800;font-size:16px;margin-bottom:6px">{{ plan.label }}</div>
+                <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:var(--gold)">₹{{ plan.fee }}</div>
                 {% if key == 'monthly' %}
                 <div style="font-size:11px;color:var(--gold);margin-top:4px">+ ₹200 admission (first time)</div>
                 {% endif %}
@@ -24,14 +31,52 @@
         </label>
         {% endfor %}
     </div>
+
+    <div class="card" style="max-width:500px;margin-bottom:20px">
+        <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--gold);margin-bottom:14px">💳 Payment Method</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <label style="cursor:pointer;flex:1">
+                <input type="radio" name="payment_method" value="upi" checked style="display:none" class="pay-radio">
+                <div class="card" id="pay-upi" style="text-align:center;padding:16px;border-color:var(--gold);box-shadow:0 0 16px rgba(212,160,23,0.15)">
+                    <div style="font-size:24px;margin-bottom:6px">📱</div>
+                    <div style="font-family:'Playfair Display',serif;font-weight:700;color:var(--gold)">UPI</div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:3px">Pay online instantly</div>
+                </div>
+            </label>
+            <label style="cursor:pointer;flex:1">
+                <input type="radio" name="payment_method" value="cash" style="display:none" class="pay-radio">
+                <div class="card" id="pay-cash" style="text-align:center;padding:16px">
+                    <div style="font-size:24px;margin-bottom:6px">💵</div>
+                    <div style="font-family:'Playfair Display',serif;font-weight:700">Cash</div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:3px">Pay at the gym</div>
+                </div>
+            </label>
+        </div>
+    </div>
+
     <button type="submit" class="add-btn">Proceed to Payment →</button>
 </form>
+
 <script>
-document.querySelectorAll('.plan-radio').forEach(radio => {
-    radio.addEventListener('change', function(){
-        document.querySelectorAll('.plan-card').forEach(c => c.style.borderColor = 'rgba(124,58,237,0.2)');
-        this.closest('label').querySelector('.plan-card').style.borderColor = '#7c3aed';
-        this.closest('label').querySelector('.plan-card').style.boxShadow = '0 0 20px rgba(124,58,237,0.3)';
+document.querySelectorAll('.plan-radio').forEach(r=>{
+    r.addEventListener('change',function(){
+        document.querySelectorAll('.plan-card').forEach(c=>{
+            c.style.borderColor='var(--border)';
+            c.style.boxShadow='none';
+        });
+        this.closest('label').querySelector('.plan-card').style.borderColor='var(--gold)';
+        this.closest('label').querySelector('.plan-card').style.boxShadow='0 0 20px rgba(212,160,23,0.2)';
+    });
+});
+document.querySelectorAll('.pay-radio').forEach(r=>{
+    r.addEventListener('change',function(){
+        document.getElementById('pay-upi').style.borderColor='var(--border)';
+        document.getElementById('pay-upi').style.boxShadow='none';
+        document.getElementById('pay-cash').style.borderColor='var(--border)';
+        document.getElementById('pay-cash').style.boxShadow='none';
+        const id = this.value==='upi'?'pay-upi':'pay-cash';
+        document.getElementById(id).style.borderColor='var(--gold)';
+        document.getElementById(id).style.boxShadow='0 0 16px rgba(212,160,23,0.15)';
     });
 });
 </script>

@@ -88,7 +88,30 @@
     <div style="text-align:center;color:var(--muted);padding:24px;font-weight:300">No attendance recorded today yet!</div>
     {% endif %}
 </div>
-
+{% if pending_payments|length > 0 %}
+<div class="section-title">💳 Pending Payment Approvals ({{ pending_payments|length }})</div>
+<div class="card">
+    <table>
+        <tr><th>Member</th><th>Plan</th><th>Amount</th><th>Method</th><th>Date</th><th>Action</th></tr>
+        {% for p in pending_payments %}
+        <tr>
+            <td><b>{{ p.member_name }}</b></td>
+            <td>{{ p.membership_type|title }}</td>
+            <td class="gold"><b>₹{{ p.total_fee }}</b></td>
+            <td>
+                {% if p.payment_method == 'upi' %}
+                <span class="badge badge-gold">📱 UPI</span>
+                {% else %}
+                <span class="badge badge-green">💵 Cash</span>
+                {% endif %}
+            </td>
+            <td style="color:var(--muted);font-size:12px">{{ p.date }}</td>
+            <td><a href="/approve_payment/{{ p.id }}" class="btn btn-green" onclick="return confirm('Approve payment for {{ p.member_name }}?')">✅ Approve</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endif %}
 <div class="row-flex">
     <span style="font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:var(--gold)">Month End Actions</span>
     <a href="/monthly_check" class="btn btn-gold" onclick="return confirm('Run monthly check? Unpaid members will be flagged or removed.')">Run Monthly Check</a>

@@ -1,0 +1,19 @@
+{% extends "member_base.html" %}
+{% block content %}
+<div class="page-title">🏖️ Mark Leave</div>
+<div class="card" style="max-width:480px">
+    <div class="alert alert-warn" style="margin-bottom:18px">
+        You are marking yourself as <b>on leave</b> for today. Add a remark so you remember why!
+    </div>
+    <form method="POST">
+        <div class="form-group">
+            <label>Reason for Leave (optional)</label>
+            <input type="text" name="remark" placeholder="e.g. Sick, Travel, Rest day, Family function...">
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button type="submit" class="add-btn" style="background:linear-gradient(135deg,#D4A017,#8B6914)">✅ Confirm Leave</button>
+            <a href="/member" class="btn btn-red">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

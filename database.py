@@ -51,6 +51,8 @@ def setup_database():
             date TEXT NOT NULL,
             check_in TEXT DEFAULT NULL,
             check_out TEXT DEFAULT NULL,
+            status TEXT DEFAULT 'present',
+            remark TEXT DEFAULT NULL,
             month TEXT NOT NULL,
             year INTEGER NOT NULL,
             auto_checkout INTEGER DEFAULT 0
@@ -65,6 +67,19 @@ def setup_database():
             amount INTEGER NOT NULL,
             month TEXT NOT NULL,
             year INTEGER NOT NULL,
+            date TEXT NOT NULL
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS payment_requests (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            member_id INTEGER NOT NULL,
+            member_name TEXT NOT NULL,
+            membership_type TEXT NOT NULL,
+            total_fee INTEGER NOT NULL,
+            payment_method TEXT NOT NULL,
+            status TEXT DEFAULT 'pending',
             date TEXT NOT NULL
         )
     """)
