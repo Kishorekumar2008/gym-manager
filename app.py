@@ -5,7 +5,7 @@ import members
 import finance
 import attendance
 import expense
-from datetime import datetime, timedelta
+from datetime import datetime
 from functools import wraps
 
 app = Flask(__name__)
@@ -37,12 +37,8 @@ def member_login_required(f):
 def login():
     if request.method == "POST":
         if check_credentials(request.form["username"], request.form["password"]):
-    session["logged_in"] = True
-    remember = request.form.get("remember")
-    if remember:
-        session.permanent = True
-        app.permanent_session_lifetime = timedelta(days=30)
-    return redirect(url_for("home"))
+            session["logged_in"] = True
+            return redirect(url_for("home"))
         return render_template("login.html", error="Wrong username or password!")
     return render_template("login.html", error=None)
 
@@ -73,13 +69,9 @@ def member_login():
     if request.method == "POST":
         member = members.member_login(request.form["username"], request.form["password"])
         if member:
-    session["member_id"] = member["id"]
-    session["member_name"] = member["name"]
-    remember = request.form.get("remember")
-    if remember:
-        session.permanent = True
-        app.permanent_session_lifetime = timedelta(days=30)
-    return redirect(url_for("member_home"))
+            session["member_id"] = member["id"]
+            session["member_name"] = member["name"]
+            return redirect(url_for("member_home"))
         return render_template("member_login.html", error="Wrong username or password! Contact owner if forgotten.", success=None)
     return render_template("member_login.html", error=None, success=success)
 
