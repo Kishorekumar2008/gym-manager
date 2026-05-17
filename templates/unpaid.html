@@ -3,33 +3,37 @@
 <div class="page-title">⚠️ Unpaid Members</div>
 {% if unpaid|length == 0 %}
 <div class="card" style="text-align:center;padding:40px;color:var(--muted)">
-    🎉 All members have paid their fees!
+    🎉 All members have paid!
 </div>
 {% else %}
 <div class="alert alert-warn">Total pending: <b>₹{{ total_pending }}</b> from {{ unpaid|length }} member(s)</div>
 <div class="card">
-    <table>
-        <tr><th>Member</th><th>Phone</th><th>Plan</th><th>Fee Due</th><th>Months Unpaid</th><th>Action</th></tr>
-        {% for m in unpaid %}
-        <tr>
-            <td><b>{{ m.name }}</b></td>
-            <td>{{ m.phone }}</td>
-            <td>{{ m.membership_type|title if m.membership_type else '—' }}</td>
-            <td class="red"><b>₹{{ m.total_fee }}</b></td>
-            <td>
-                {% if m.months_unpaid >= 2 %}<span class="badge badge-red">{{ m.months_unpaid }} months</span>
-                {% elif m.months_unpaid == 1 %}<span class="badge badge-warn">1 month</span>
-                {% else %}<span class="badge badge-muted">Current</span>{% endif %}
-            </td>
-            <td style="display:flex;gap:6px">
-                <a href="/mark_paid/{{ m.id }}" class="btn btn-green">Mark Paid</a>
-                {% if m.months_unpaid >= 1 %}
-                <a href="/soft_remove/{{ m.id }}" class="btn btn-red" onclick="return confirm('Remove {{ m.name }}?')">Remove</a>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div class="table-wrap">
+        <table>
+            <tr><th>Member</th><th>Phone</th><th>Plan</th><th>Fee Due</th><th>Months</th><th>Action</th></tr>
+            {% for m in unpaid %}
+            <tr>
+                <td><b>{{ m.name }}</b></td>
+                <td style="font-size:11px">{{ m.phone }}</td>
+                <td>{{ m.membership_type|title if m.membership_type else '—' }}</td>
+                <td class="red"><b>₹{{ m.total_fee }}</b></td>
+                <td>
+                    {% if m.months_unpaid >= 2 %}<span class="badge badge-red">{{ m.months_unpaid }}mo</span>
+                    {% elif m.months_unpaid == 1 %}<span class="badge badge-warn">1mo</span>
+                    {% else %}<span class="badge badge-muted">Current</span>{% endif %}
+                </td>
+                <td>
+                    <div style="display:flex;gap:4px;flex-wrap:wrap">
+                        <a href="/mark_paid/{{ m.id }}" class="btn btn-green" style="font-size:10px">Mark Paid</a>
+                        {% if m.months_unpaid >= 1 %}
+                        <a href="/soft_remove/{{ m.id }}" class="btn btn-red" style="font-size:10px" onclick="return confirm('Remove?')">Remove</a>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </div>
 {% endif %}
 {% endblock %}

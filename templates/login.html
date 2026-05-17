@@ -8,8 +8,8 @@
         [data-theme="dark"]{--bg:#0D0D00;--surface:#1A1700;--surface2:#242100;--text:#FFF8E1;--muted:#A89060;--border:rgba(212,160,23,0.25)}
         [data-theme="light"]{--bg:#FFFDF0;--surface:#FFFFFF;--surface2:#FFF8DC;--text:#1A1200;--muted:#6B5A2A;--border:rgba(212,160,23,0.35)}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;transition:background 0.4s}
-        .box{background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:38px;width:100%;max-width:420px;animation:fadeUp 0.5s ease;position:relative;overflow:hidden}
+        body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;transition:background 0.4s}
+.box{background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:32px 24px;width:100%;max-width:420px;animation:fadeUp 0.5s ease;position:relative;overflow:hidden}
         .shimmer{position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(212,160,23,0.06),transparent);animation:shimmer 4s infinite}
         @keyframes shimmer{0%{left:-100%}100%{left:200%}}
         .logo{text-align:center;margin-bottom:28px}
@@ -30,6 +30,13 @@
         .theme-btn{padding:4px 12px;border-radius:14px;border:1px solid var(--border);cursor:pointer;font-size:11px;font-family:'Inter',sans-serif;background:none;color:var(--muted);transition:all 0.2s}
         .theme-btn.active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:600}
         @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:480px){
+    body{padding:12px;justify-content:flex-start;padding-top:40px}
+    .box{border-radius:16px;padding:24px 18px}
+    .logo img{width:56px;height:56px}
+    .logo-name{font-size:20px}
+    .btn{font-size:15px;padding:13px}
+}    
     </style>
 </head>
 <body>
@@ -51,6 +58,10 @@
             <label>Password</label>
             <input type="password" name="password" placeholder="Enter password" required>
         </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+    <input type="checkbox" name="remember" id="remember" style="width:auto;accent-color:var(--gold);width:16px;height:16px;cursor:pointer">
+    <label for="remember" style="font-size:13px;color:var(--muted);cursor:pointer;margin:0">Remember me</label>
+</div>
         <button type="submit" class="btn">Sign In</button>
     </form>
     <div class="link">Member? <a href="/member/login">Member Portal →</a></div>

@@ -32,6 +32,12 @@
         .theme-btn{padding:4px 11px;border-radius:14px;border:1px solid var(--border);cursor:pointer;font-size:11px;font-family:'Inter',sans-serif;background:none;color:var(--muted);transition:all 0.2s}
         .theme-btn.active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:600}
         @keyframes fadeUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:480px){
+    body{padding:12px;justify-content:flex-start;padding-top:30px}
+    .box{border-radius:16px;padding:24px 18px}
+    .logo img{width:50px;height:50px}
+    .logo-name{font-size:19px}
+}    
     </style>
 </head>
 <body>
@@ -54,6 +60,10 @@
             <label>Password</label>
             <input type="password" name="password" placeholder="Your password" required>
         </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+    <input type="checkbox" name="remember" id="remember" style="width:16px;height:16px;accent-color:var(--gold);cursor:pointer">
+    <label for="remember" style="font-size:13px;color:var(--muted);cursor:pointer;margin:0">Remember me</label>
+</div>
         <button type="submit" class="btn">Sign In 💪</button>
     </form>
     <div class="forgot">Forgot password? Contact the gym owner.</div>
