@@ -2,42 +2,49 @@
 <html data-theme="dark">
 <head>
     <title>Golden Gym — Member Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root{--gold:#D4A017;--gold2:#F5C842;--red:#EF4444;--green:#22C55E}
         [data-theme="dark"]{--bg:#0D0D00;--surface:#1A1700;--surface2:#242100;--text:#FFF8E1;--muted:#A89060;--border:rgba(212,160,23,0.25)}
         [data-theme="light"]{--bg:#FFFDF0;--surface:#FFFFFF;--surface2:#FFF8DC;--text:#1A1200;--muted:#6B5A2A;--border:rgba(212,160,23,0.35)}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;transition:background 0.4s}
-        .box{background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:36px;width:100%;max-width:420px;animation:fadeUp 0.5s ease;position:relative;overflow:hidden}
+        body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;transition:background 0.4s}
+        .box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:36px 28px;width:100%;max-width:420px;position:relative;overflow:hidden;animation:fadeUp 0.4s ease}
         .shimmer{position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(212,160,23,0.06),transparent);animation:shimmer 4s infinite}
         @keyframes shimmer{0%{left:-100%}100%{left:200%}}
-        .logo{text-align:center;margin-bottom:24px}
-        .logo img{width:60px;height:60px;border-radius:50%;border:2px solid var(--gold);margin-bottom:10px;object-fit:cover}
-        .logo-placeholder{width:60px;height:60px;border-radius:50%;border:2px solid var(--gold);margin:0 auto 10px;background:rgba(212,160,23,0.1);display:flex;align-items:center;justify-content:center;font-size:28px}
-        .logo-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--gold)}
-        .logo-sub{color:var(--muted);font-size:12px;margin-top:3px;font-weight:300}
-        .form-group{margin-bottom:15px}
-        .form-group label{display:block;margin-bottom:5px;font-size:13px;color:var(--muted)}
-        .form-group input{width:100%;padding:11px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s}
+        .logo{text-align:center;margin-bottom:28px}
+        .logo img{width:72px;height:72px;border-radius:50%;border:3px solid var(--gold);margin-bottom:12px;object-fit:cover;display:block;margin-left:auto;margin-right:auto}
+        .logo-placeholder{width:72px;height:72px;border-radius:50%;border:3px solid var(--gold);margin:0 auto 12px;background:rgba(212,160,23,0.1);display:flex;align-items:center;justify-content:center;font-size:32px}
+        .logo-name{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--gold)}
+        .logo-sub{color:var(--muted);font-size:13px;margin-top:4px;font-weight:300}
+        .form-group{margin-bottom:18px}
+        .form-group label{display:block;margin-bottom:7px;font-size:14px;color:var(--muted)}
+        .form-group input{width:100%;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:16px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s;-webkit-appearance:none}
         .form-group input:focus{border-color:var(--gold)}
-        .btn{width:100%;padding:11px;border-radius:10px;border:none;background:var(--gold);color:#000;font-family:'Playfair Display',serif;font-weight:700;font-size:14px;cursor:pointer;transition:all 0.2s;margin-top:4px}
-        .btn:hover{background:var(--gold2);box-shadow:0 4px 16px rgba(212,160,23,0.35)}
-        .error{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red);padding:11px;border-radius:10px;font-size:13px;margin-bottom:14px;text-align:center}
-        .success{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:var(--green);padding:11px;border-radius:10px;font-size:13px;margin-bottom:14px;text-align:center}
-        .forgot{text-align:center;margin-top:10px;font-size:12px;color:var(--muted)}
-        .link{text-align:center;margin-top:14px;font-size:12px;color:var(--muted)}
+        .remember-row{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+        .remember-row input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold);cursor:pointer;flex-shrink:0}
+        .remember-row label{font-size:14px;color:var(--muted);cursor:pointer;margin:0}
+        .btn{width:100%;padding:15px;border-radius:12px;border:none;background:var(--gold);color:#000;font-family:'Playfair Display',serif;font-weight:700;font-size:16px;cursor:pointer;transition:all 0.2s}
+        .btn:hover{background:var(--gold2)}
+        .btn:active{transform:scale(0.98)}
+        .error{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red);padding:13px;border-radius:12px;font-size:14px;margin-bottom:18px;text-align:center}
+        .success{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:var(--green);padding:13px;border-radius:12px;font-size:14px;margin-bottom:18px;text-align:center}
+        .forgot{text-align:center;margin-top:12px;font-size:13px;color:var(--muted)}
+        .link{text-align:center;margin-top:12px;font-size:14px;color:var(--muted)}
         .link a{color:var(--gold);text-decoration:none;font-weight:500}
-        .theme-row{display:flex;justify-content:center;gap:6px;margin-top:16px}
-        .theme-btn{padding:4px 11px;border-radius:14px;border:1px solid var(--border);cursor:pointer;font-size:11px;font-family:'Inter',sans-serif;background:none;color:var(--muted);transition:all 0.2s}
+        .theme-row{display:flex;justify-content:center;gap:8px;margin-top:20px}
+        .theme-btn{padding:6px 14px;border-radius:16px;border:1px solid var(--border);cursor:pointer;font-size:12px;font-family:'Inter',sans-serif;background:none;color:var(--muted);transition:all 0.2s}
         .theme-btn.active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:600}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:480px){
-    body{padding:12px;justify-content:flex-start;padding-top:30px}
-    .box{border-radius:16px;padding:24px 18px}
-    .logo img{width:50px;height:50px}
-    .logo-name{font-size:19px}
-}    
+        @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        @media(max-width:480px){
+            body{padding:0;justify-content:flex-start;background:var(--surface)}
+            .box{border-radius:0;border:none;min-height:100vh;min-height:100dvh;padding:60px 24px 32px;max-width:100%;display:flex;flex-direction:column;justify-content:center}
+            .logo img{width:80px;height:80px}
+            .logo-name{font-size:28px}
+            .form-group input{font-size:16px;padding:15px 16px}
+            .btn{font-size:17px;padding:16px}
+        }
     </style>
 </head>
 <body>
@@ -54,38 +61,26 @@
     <form method="POST">
         <div class="form-group">
             <label>Username</label>
-            <input type="text" name="username" placeholder="Your username" required autofocus>
+            <input type="text" name="username" placeholder="Your username" required autofocus autocomplete="username">
         </div>
         <div class="form-group">
             <label>Password</label>
-            <input type="password" name="password" placeholder="Your password" required>
+            <input type="password" name="password" placeholder="Your password" required autocomplete="current-password">
         </div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
-    <input type="checkbox" name="remember" id="remember" style="width:16px;height:16px;accent-color:var(--gold);cursor:pointer">
-    <label for="remember" style="font-size:13px;color:var(--muted);cursor:pointer;margin:0">Remember me</label>
-</div>
+        <div class="remember-row">
+            <input type="checkbox" name="remember" id="remember" checked>
+            <label for="remember">Keep me signed in</label>
+        </div>
         <button type="submit" class="btn">Sign In 💪</button>
     </form>
-    <div class="forgot">Forgot password? Contact the gym owner.</div>
+    <div class="forgot">Forgot password? Contact the gym owner — 📞 88255 58615</div>
     <div class="link">New here? <a href="/member/register">Create Account →</a></div>
-    <div class="link" style="margin-top:6px"><a href="/login">Owner Login →</a></div>
+    <div class="link" style="margin-top:8px"><a href="/login">Owner Login →</a></div>
     <div class="theme-row">
         <button class="theme-btn" onclick="setTheme('light')">☀️</button>
         <button class="theme-btn active" onclick="setTheme('dark')">🌙</button>
         <button class="theme-btn" onclick="setTheme('auto')">⚙️</button>
     </div>
-<footer style="text-align:center;padding:20px 24px;border-top:1px solid var(--border);margin-top:20px;font-size:12px;color:var(--muted)">
-    <div style="margin-bottom:6px">
-        📞 <a href="tel:8825558615" style="color:var(--gold);text-decoration:none">88255 58615</a>
-        &nbsp;·&nbsp;
-        ✉️ <a href="mailto:goldengym@gmail.com" style="color:var(--gold);text-decoration:none">goldengym@gmail.com</a>
-    </div>
-    <div style="display:flex;justify-content:center;gap:14px;margin-bottom:6px">
-        <a href="https://instagram.com/goldengym" target="_blank" style="color:var(--gold);text-decoration:none">📸 Instagram</a>
-        <a href="https://wa.me/918825558615" target="_blank" style="color:var(--gold);text-decoration:none">💬 WhatsApp</a>
-    </div>
-    <div>© 2026 Golden Gym. All rights reserved.</div>
-</footer>
 </div>
 <script>
 function setTheme(t){
@@ -95,7 +90,11 @@ function setTheme(t){
     else{html.setAttribute('data-theme',t);document.querySelectorAll('.theme-btn')[t==='light'?0:1].classList.add('active');}
     localStorage.setItem('gym-theme',t);
 }
-(function(){const s=localStorage.getItem('gym-theme')||'dark';if(s==='auto'){document.documentElement.setAttribute('data-theme',window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.querySelectorAll('.theme-btn')[2]?.classList.add('active');}else{document.documentElement.setAttribute('data-theme',s);document.querySelectorAll('.theme-btn')[s==='light'?0:1]?.classList.add('active');}})();
+(function(){
+    const s=localStorage.getItem('gym-theme')||'dark';
+    if(s==='auto'){document.documentElement.setAttribute('data-theme',window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.querySelectorAll('.theme-btn')[2]?.classList.add('active');}
+    else{document.documentElement.setAttribute('data-theme',s);document.querySelectorAll('.theme-btn')[s==='light'?0:1]?.classList.add('active');}
+})();
 </script>
 </body>
 </html>

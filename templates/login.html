@@ -2,41 +2,86 @@
 <html data-theme="dark">
 <head>
     <title>Golden Gym — Owner Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root{--gold:#D4A017;--gold2:#F5C842;--red:#EF4444;--green:#22C55E}
         [data-theme="dark"]{--bg:#0D0D00;--surface:#1A1700;--surface2:#242100;--text:#FFF8E1;--muted:#A89060;--border:rgba(212,160,23,0.25)}
         [data-theme="light"]{--bg:#FFFDF0;--surface:#FFFFFF;--surface2:#FFF8DC;--text:#1A1200;--muted:#6B5A2A;--border:rgba(212,160,23,0.35)}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;transition:background 0.4s}
-.box{background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:32px 24px;width:100%;max-width:420px;animation:fadeUp 0.5s ease;position:relative;overflow:hidden}
+        body{
+            background:var(--bg);color:var(--text);
+            font-family:'Inter',sans-serif;
+            min-height:100vh;min-height:100dvh;
+            display:flex;flex-direction:column;
+            align-items:center;justify-content:center;
+            padding:16px;transition:background 0.4s
+        }
+        .box{
+            background:var(--surface);
+            border:1px solid var(--border);
+            border-radius:24px;
+            padding:36px 28px;
+            width:100%;max-width:420px;
+            position:relative;overflow:hidden
+        }
         .shimmer{position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(212,160,23,0.06),transparent);animation:shimmer 4s infinite}
         @keyframes shimmer{0%{left:-100%}100%{left:200%}}
         .logo{text-align:center;margin-bottom:28px}
-        .logo img{width:70px;height:70px;border-radius:50%;border:3px solid var(--gold);margin-bottom:12px;object-fit:cover}
-        .logo-placeholder{width:70px;height:70px;border-radius:50%;border:3px solid var(--gold);margin:0 auto 12px;background:rgba(212,160,23,0.1);display:flex;align-items:center;justify-content:center;font-size:32px}
-        .logo-name{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:var(--gold)}
-        .logo-sub{color:var(--muted);font-size:12px;margin-top:4px;font-weight:300;letter-spacing:0.3px}
-        .form-group{margin-bottom:16px}
-        .form-group label{display:block;margin-bottom:6px;font-size:13px;color:var(--muted)}
-        .form-group input{width:100%;padding:12px 15px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s}
+        .logo img{width:72px;height:72px;border-radius:50%;border:3px solid var(--gold);margin-bottom:12px;object-fit:cover;display:block;margin-left:auto;margin-right:auto}
+        .logo-placeholder{width:72px;height:72px;border-radius:50%;border:3px solid var(--gold);margin:0 auto 12px;background:rgba(212,160,23,0.1);display:flex;align-items:center;justify-content:center;font-size:32px}
+        .logo-name{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--gold)}
+        .logo-sub{color:var(--muted);font-size:13px;margin-top:4px;font-weight:300}
+        .form-group{margin-bottom:18px}
+        .form-group label{display:block;margin-bottom:7px;font-size:14px;color:var(--muted);font-weight:400}
+        .form-group input{
+            width:100%;padding:14px 16px;
+            background:var(--surface2);
+            border:1px solid var(--border);
+            border-radius:12px;color:var(--text);
+            font-size:16px;font-family:'Inter',sans-serif;
+            outline:none;transition:border-color 0.2s;
+            -webkit-appearance:none
+        }
         .form-group input:focus{border-color:var(--gold)}
-        .btn{width:100%;padding:12px;border-radius:10px;border:none;background:var(--gold);color:#000;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;cursor:pointer;transition:all 0.2s;margin-top:4px;letter-spacing:0.3px}
-        .btn:hover{background:var(--gold2);box-shadow:0 4px 18px rgba(212,160,23,0.35)}
-        .error{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red);padding:11px 14px;border-radius:10px;font-size:13px;margin-bottom:16px;text-align:center}
-        .link{text-align:center;margin-top:16px;font-size:12px;color:var(--muted)}
+        .remember-row{display:flex;align-items:center;gap:10px;margin-bottom:18px;cursor:pointer}
+        .remember-row input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold);cursor:pointer;flex-shrink:0}
+        .remember-row label{font-size:14px;color:var(--muted);cursor:pointer;margin:0}
+        .btn{
+            width:100%;padding:15px;border-radius:12px;border:none;
+            background:var(--gold);color:#000;
+            font-family:'Playfair Display',serif;
+            font-weight:700;font-size:16px;
+            cursor:pointer;transition:all 0.2s;letter-spacing:0.3px
+        }
+        .btn:hover{background:var(--gold2)}
+        .btn:active{transform:scale(0.98)}
+        .error{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red);padding:13px 16px;border-radius:12px;font-size:14px;margin-bottom:18px;text-align:center}
+        .link{text-align:center;margin-top:16px;font-size:14px;color:var(--muted)}
         .link a{color:var(--gold);text-decoration:none;font-weight:500}
-        .theme-row{display:flex;justify-content:center;gap:6px;margin-top:18px}
-        .theme-btn{padding:4px 12px;border-radius:14px;border:1px solid var(--border);cursor:pointer;font-size:11px;font-family:'Inter',sans-serif;background:none;color:var(--muted);transition:all 0.2s}
+        .theme-row{display:flex;justify-content:center;gap:8px;margin-top:20px}
+        .theme-btn{padding:6px 14px;border-radius:16px;border:1px solid var(--border);cursor:pointer;font-size:12px;font-family:'Inter',sans-serif;background:none;color:var(--muted);transition:all 0.2s}
         .theme-btn.active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:600}
+        .footer-info{text-align:center;margin-top:20px;font-size:12px;color:var(--muted)}
+        .footer-info a{color:var(--gold);text-decoration:none;margin:0 4px}
+        .footer-links{display:flex;justify-content:center;gap:12px;margin-top:6px}
         @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:480px){
-    body{padding:12px;justify-content:flex-start;padding-top:40px}
-    .box{border-radius:16px;padding:24px 18px}
-    .logo img{width:56px;height:56px}
-    .logo-name{font-size:20px}
-    .btn{font-size:15px;padding:13px}
-}    
+        .box{animation:fadeUp 0.4s ease}
+
+        @media(max-width:480px){
+            body{padding:0;justify-content:flex-start;background:var(--surface)}
+            .box{
+                border-radius:0;border:none;
+                min-height:100vh;min-height:100dvh;
+                padding:60px 24px 32px;
+                max-width:100%;
+                display:flex;flex-direction:column;justify-content:center
+            }
+            .logo img{width:80px;height:80px}
+            .logo-name{font-size:28px}
+            .form-group input{font-size:16px;padding:15px 16px}
+            .btn{font-size:17px;padding:16px}
+        }
     </style>
 </head>
 <body>
@@ -52,16 +97,16 @@
     <form method="POST">
         <div class="form-group">
             <label>Username</label>
-            <input type="text" name="username" placeholder="Enter username" required autofocus>
+            <input type="text" name="username" placeholder="Enter username" required autofocus autocomplete="username">
         </div>
         <div class="form-group">
             <label>Password</label>
-            <input type="password" name="password" placeholder="Enter password" required>
+            <input type="password" name="password" placeholder="Enter password" required autocomplete="current-password">
         </div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
-    <input type="checkbox" name="remember" id="remember" style="width:auto;accent-color:var(--gold);width:16px;height:16px;cursor:pointer">
-    <label for="remember" style="font-size:13px;color:var(--muted);cursor:pointer;margin:0">Remember me</label>
-</div>
+        <div class="remember-row">
+            <input type="checkbox" name="remember" id="remember" checked>
+            <label for="remember">Keep me signed in</label>
+        </div>
         <button type="submit" class="btn">Sign In</button>
     </form>
     <div class="link">Member? <a href="/member/login">Member Portal →</a></div>
@@ -69,13 +114,13 @@
         <button class="theme-btn" onclick="setTheme('light')">☀️ Light</button>
         <button class="theme-btn active" onclick="setTheme('dark')">🌙 Dark</button>
         <button class="theme-btn" onclick="setTheme('auto')">⚙️ Auto</button>
-<div class="footer" style="margin-top:20px;text-align:center;color:var(--muted);font-size:12px;font-weight:300">
-    <div>📞 <a href="tel:8825558615" style="color:var(--gold);text-decoration:none">88255 58615</a> &nbsp;·&nbsp; ✉️ <a href="mailto:goldengym@gmail.com" style="color:var(--gold);text-decoration:none">goldengym@gmail.com</a></div>
-    <div style="display:flex;justify-content:center;gap:12px;margin-top:6px">
-        <a href="https://instagram.com/goldengym" target="_blank" style="color:var(--gold);text-decoration:none">📸 Instagram</a>
-        <a href="https://wa.me/918825558615" target="_blank" style="color:var(--gold);text-decoration:none">💬 WhatsApp</a>
     </div>
-</div>
+    <div class="footer-info">
+        <div>📞 <a href="tel:8825558615">88255 58615</a></div>
+        <div class="footer-links">
+            <a href="https://instagram.com/goloden_gym_2024" target="_blank">📸 Instagram</a>
+            <a href="https://wa.me/919344329720" target="_blank">💬 WhatsApp</a>
+        </div>
     </div>
 </div>
 <script>

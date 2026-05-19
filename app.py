@@ -5,7 +5,7 @@ import members
 import finance
 import attendance
 import expense
-from datetime import datetime
+from datetime import datetime, timedelta
 from functools import wraps
 
 app = Flask(__name__)
@@ -38,6 +38,9 @@ def login():
     if request.method == "POST":
         if check_credentials(request.form["username"], request.form["password"]):
             session["logged_in"] = True
+            if request.form.get("remember"):
+                session.permanent = True
+                app.permanent_session_lifetime = timedelta(days=30)
             return redirect(url_for("home"))
         return render_template("login.html", error="Wrong username or password!")
     return render_template("login.html", error=None)
@@ -71,6 +74,9 @@ def member_login():
         if member:
             session["member_id"] = member["id"]
             session["member_name"] = member["name"]
+            if request.form.get("remember"):
+                session.permanent = True
+                app.permanent_session_lifetime = timedelta(days=30)
             return redirect(url_for("member_home"))
         return render_template("member_login.html", error="Wrong username or password! Contact owner if forgotten.", success=None)
     return render_template("member_login.html", error=None, success=success)
@@ -152,7 +158,7 @@ def member_change_password():
         new = request.form["new_password"]
         confirm = request.form["confirm"]
         if new != confirm:
-            return render_template("member_change_password.html", error="Passwords don't match!")
+            return render_template("member_change_password.html", error="Passwords don't match!", success=None)
         success, msg = members.change_password(session["member_id"], old, new)
         if success:
             return render_template("member_change_password.html", success=msg, error=None)
@@ -301,7 +307,11 @@ def show_expenses():
 @login_required
 def add_expense():
     if request.method == "POST":
-        expense.add_expense(request.form["category"], request.form["description"], int(request.form["amount"]))
+        expense.add_expense(
+            request.form["category"],
+            request.form["description"],
+            int(request.form["amount"])
+        )
         return redirect(url_for("show_expenses"))
     return render_template("add_expense.html")
 
@@ -311,7 +321,10 @@ def show_unpaid():
     all_members = members.get_all_members()
     unpaid = [m for m in all_members if not m["paid"]]
     total_pending = sum(m["total_fee"] for m in unpaid)
-    return render_template("unpaid.html", unpaid=unpaid, total_pending=total_pending)
+    return render_template("unpaid.html",
+        unpaid=unpaid,
+        total_pending=total_pending
+    )
 
 @app.route("/plans")
 @login_required
